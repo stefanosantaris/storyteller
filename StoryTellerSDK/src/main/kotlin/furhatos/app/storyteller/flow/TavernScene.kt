@@ -2,7 +2,7 @@ package furhatos.app.storyteller.flow
 
 import furhatos.flow.kotlin.*
 
-val TavernScene : State = state(Interaction) {
+val TavernOptions : State = state(Interaction) {
 
     onEntry {
         furhat.say()
@@ -10,8 +10,15 @@ val TavernScene : State = state(Interaction) {
     }
 }
 
+val TavernArrival = state(parent = TavernOptions) {
+    onEntry {
+        furhat.say(dialogStrings["onArrival"]!!)
+        furhat.ask("What do you do?")
+    }
+}
+
 
 private val dialogStrings = mapOf(
-        "onEntry" to
+        "onArrival" to
                 ""
 )
