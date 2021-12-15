@@ -2,7 +2,10 @@ package furhatos.app.storyteller.nlu
 
 import furhatos.nlu.EnumEntity
 import furhatos.nlu.Intent
+<<<<<<< HEAD
 import furhatos.util.Language
+=======
+>>>>>>> main
 
 class GoToTownSquare: Intent()
 
