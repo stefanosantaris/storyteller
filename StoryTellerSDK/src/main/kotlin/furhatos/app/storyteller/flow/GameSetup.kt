@@ -1,6 +1,9 @@
 package furhatos.app.storyteller.flow
 import furhatos.app.storyteller.robotName
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gestures
+import furhatos.nlu.common.No
+import furhatos.nlu.common.Yes
 
 val FetchUserName : State = state(Interaction) {
     onEntry {
@@ -53,12 +56,53 @@ val SelfPresent : State = state{
 }
 
 val PresentGame : State = state{
+    var first_answer : Boolean = false
+
     onEntry {
-        random(
-            {furhat.say("Hi there. It is a pleasure to meet you. I am $robotName.")},
-            {furhat.say("Hello my friend. Glad to meet you! My name is $robotName.")},
-            {furhat.say("Hi there. What a pleasure meeting you. My name is $robotName.")}
-        )
-        goto(FetchUserName)
+        first_answer = false
+        furhat.ask("${users.current.name} would you like to play a game?")
     }
+
+    /*
+    Positive response to game
+     */
+    onResponse<Yes> {
+        if (first_answer == false) {
+            furhat.say(utterance {
+                +"Awesome!"
+                +blocking {
+                    furhat.gesture(Gestures.BigSmile, async = false)
+                }
+                +"This game requires your imagination. I will walk you through an interactive story. In this story, you are the protagonist"
+                +"and you can decide how you want to act."
+                +blocking {
+                    furhat.gesture(Gestures.Oh, async = false)
+                }
+            })
+            first_answer = true
+            furhat.ask("Are you ready to play this game with me?")
+        } else {
+            furhat.say(utterance {
+                +"Wonderful!"
+                +blocking {
+                    furhat.gesture(Gestures.BigSmile, async = false)
+                }
+                +"Then let us start"
+            })
+            goto(OpeningScene)
+        }
+    }
+
+    /*
+    Negative response to game
+     */
+    onResponse<No> {
+        random(
+            {furhat.say("What a pity! Have a great day then.")},
+            {furhat.say("That is sad. However, thank you for your time.")},
+            {furhat.say("What a pity. Maybe next time.")}
+        )
+    }
+
+
 }
