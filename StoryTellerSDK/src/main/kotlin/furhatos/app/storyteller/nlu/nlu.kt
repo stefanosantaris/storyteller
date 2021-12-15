@@ -2,9 +2,9 @@ package furhatos.app.storyteller.nlu
 
 import furhatos.nlu.Intent
 
-class GoToTownSquare: Intent()
+// Alley
 
-class EnterTavern: Intent()
+class GoToAlley: Intent()
 
 class TalkToWoman: Intent()
 
@@ -14,4 +14,16 @@ class TalkToJester: Intent()
 
 class ListenToPreacher: Intent()
 
-class GoToAlley: Intent()
+class RequestGodExplanation: Intent()
+
+class AskMerchantAboutCult: Intent()
+
+class AskAboutBrother: Intent()
+
+// Town square
+
+class GoToTownSquare: Intent()
+
+// Tavern
+
+class EnterTavern: Intent()
