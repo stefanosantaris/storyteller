@@ -1,4 +1,3 @@
-package furhatos.app.storyteller.flow
+package furhatos.app.storyteller
 
-class robot {
-}
+val robotName : String = "James"
