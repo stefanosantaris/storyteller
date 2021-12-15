@@ -2,6 +2,8 @@ package furhatos.app.storyteller.flow
 import furhatos.app.storyteller.nlu.TellNameBriefly
 import furhatos.app.storyteller.robotName
 import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.voice.PollyNeuralVoice
+import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.gestures.Gestures
 import furhatos.nlu.common.TellName
 import furhatos.util.*
@@ -9,7 +11,8 @@ import furhatos.util.*
 val Idle: State = state {
 
     init {
-        furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
+        furhat.voice = PollyVoice.Joey()
+        furhat.mask = "Jamie"
         if (users.count > 0) {
             furhat.attend(users.random)
             goto(OpeningScene)
@@ -23,7 +26,6 @@ val Idle: State = state {
     onUserEnter {
         furhat.attend(it)
         goto(SelfPresent)
-        //goto(OpeningScene)
     }
 }
 
@@ -78,6 +80,73 @@ val Interaction: State = state {
     onResponse<TellName> {
         users.current.name = "${it.intent.name}"
         goto(process_name("${it.intent.name}"))
+    }
+
+    /*
+    Tell new name
+     */
+
+    onResponse {
+        if (users.current.name == null) {
+            random(
+                {
+                    furhat.say(utterance {
+                        +"Did you say:"
+                        +delay(200)
+                        +it.text
+                        +"?"
+                    })
+                },
+                {
+                    furhat.say(utterance {
+                        +"I heard:"
+                        +delay(200)
+                        +it.text
+                        +"?"
+                    })
+                }
+            )
+
+            val validate: Boolean? = furhat.askYN(utterance {
+                +delay(200)
+                +"Is that your name?"
+            })
+
+            if (validate == true) {
+                users.current.name = it.text
+                random(
+                    {
+                        furhat.say(utterance {
+                            +"${users.current.name}, what a wonderful name I just learned."
+                            +blocking {
+                                furhat.gesture(Gestures.BigSmile, async = false)
+                            }
+                        })
+                    },
+                    {
+                        furhat.say(utterance {
+                            +"${users.current.name}... Ohh one more beautiful name I learned."
+                            +blocking {
+                                furhat.gesture(Gestures.Wink, async = false)
+                            }
+                        })
+                    }
+                )
+                goto(PresentGame)
+            } else {
+                random(
+                    { furhat.ask("So what is your name?") },
+                    { furhat.ask("Okay, could you repeat your name then?") },
+                    { furhat.ask("Oh sorry, so what is your name?") }
+                )
+            }
+        } else {
+            random(
+                { furhat.ask("Sorry, what did you say?") },
+                { furhat.ask("Sorry, I didn't understand that. Could you repeat that?") },
+                { furhat.ask("Sorry, could you repeat that?") }
+            )
+        }
     }
 }
 
@@ -136,6 +205,6 @@ fun process_name(userName : String) : State = state {
                 }
             )
         }
-        goto(Idle)
+        goto(PresentGame)
     }
 }
