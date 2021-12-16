@@ -8,7 +8,7 @@ class GoToTownSquare: Intent()
 
 class EnterTavern: Intent()
 
-class TalkToWoman: Intent()
+//class TalkToWoman: Intent()
 
 class TalkToMerchant: Intent()
 
@@ -32,5 +32,19 @@ class TellNameBriefly(val name : Name? = null): Intent() {
         return listOf(
             "@name",
             "I am @name")
+    }
+}
+
+class Woman : EnumEntity(stemming = false, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "Woman", "woman", "Women", "women", "Worman", "worman", "Wolman", "wolman")
+    }
+}
+
+class TalkToWoman(val woman : Woman? = null): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("I talk to the @woman", "I will talk to the @woman", "I like to talk to the @woman", "I go to the @woman",
+        "talk to the @woman", "talk with the @woman", "@woman", "go to @woman")
     }
 }
