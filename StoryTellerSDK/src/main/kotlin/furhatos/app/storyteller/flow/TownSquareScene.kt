@@ -1,7 +1,10 @@
 package furhatos.app.storyteller.flow
 
 import furhatos.app.storyteller.nlu.*
+import furhatos.app.storyteller.utils.JokeManager
+import furhatos.app.storyteller.utils.NoMoreJokesException
 import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
@@ -30,42 +33,47 @@ val TownSquareArrival = state(parent = TownSquareOptions) {
         furhat.say(dialogStrings["onArrival"]!!)
         furhat.ask("What do you do?")
     }
+
+    onReentry {
+        furhat.ask("What do you do?")
+    }
+
+    onResponse <PleaseRepeat> {
+        furhat.say(dialogStrings["onArrival"]!!)
+        furhat.ask("What do you do?")
+    }
 }
 
 val TalkingToJester = state(parent = TownSquareOptions) {
-
-    var jokeCounter = 0
-    val jokes = listOf(
-            "Why was the knight fighting the tournament with a " +
-                    "sword made from cheddar cheese? " +
-                    "Because the cheese was extra sharp!",
-            "What did the king say when he heard that the peasants were revolting? " +
-                    "He said he agrees because they never bathe and always stink.",
-            "Why was the court jester almost executed? " +
-                    "Because the Queen got the joke at the last moment!"
-    )
-
-
 
     onEntry {
         furhat.say(dialogStrings["jesterOnEntry"]!!)
         furhat.ask("An audience! How about a joke or two?")
     }
 
+    onReentry {
+        furhat.ask("An audience! How about a joke or two?")
+    }
+
+    onResponse <PleaseRepeat> {
+        furhat.say(dialogStrings["jesterOnEntry"]!!)
+        furhat.ask("An audience! How about a joke or two?")
+    }
+
     onResponse<Yes> {
 
-        if (jokeCounter > jokes.size) {
+        try {
+            val joke = jokeManager.getNextJoke()
+            furhat.say(joke)
+            if (jokeManager.hasMoreJokes()) {
+                furhat.ask("How about another one?")
+            } else {
+                furhat.say("That was my last one!")
+                furhat.ask("What do you do?")
+            }
+
+        } catch (e: NoMoreJokesException) {
             furhat.say("I am afraid that I am all out of jokes!")
-            furhat.ask("What do you do?")
-        }
-
-        furhat.say(jokes[jokeCounter])
-        jokeCounter += 1
-
-        if (jokeCounter < jokes.size) {
-            furhat.ask("How about another one?")
-        } else {
-            furhat.say("That was my last one!")
             furhat.ask("What do you do?")
         }
 
@@ -73,15 +81,25 @@ val TalkingToJester = state(parent = TownSquareOptions) {
 
     onResponse<No> {
         furhat.say("Tis' a pity! Fare thee well!")
-        jokeCounter = 0
+        jokeManager.reset()
         furhat.ask("What do you do?")
     }
 
 }
 
+
 val TalkingToMerchant = state(parent = TownSquareOptions) {
 
     onEntry {
+        furhat.say(dialogStrings["merchantOnEntry"]!!)
+        furhat.ask("Would you like to buy something?")
+    }
+
+    onReentry {
+        furhat.ask("Would you like to buy something?")
+    }
+
+    onResponse <PleaseRepeat> {
         furhat.say(dialogStrings["merchantOnEntry"]!!)
         furhat.ask("Would you like to buy something?")
     }
@@ -117,6 +135,15 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
         furhat.ask("Are you a believer? A child of Xoros?")
     }
 
+    onReentry {
+        furhat.ask("Are you a believer? A child of Xoros?")
+    }
+
+    onResponse <PleaseRepeat> {
+        furhat.say(dialogStrings["preacherOnEntry"]!!)
+        furhat.ask("Are you a believer? A child of Xoros?")
+    }
+
     onResponse<Yes> {
         furhat.say("I knew it! I could see it in your eyes!")
         furhat.say(dialogStrings["receivePassword"]!!)
@@ -136,6 +163,7 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
     }
 
 }
+
 
 private val dialogStrings = mapOf(
         "onArrival" to
@@ -165,3 +193,6 @@ private val dialogStrings = mapOf(
         "buyFromMerchant" to
                 "Here you go, some vension and a wheel of cheddar. Have a good day. You pay the merchant."
 )
+
+
+val jokeManager = JokeManager()
