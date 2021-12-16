@@ -2,7 +2,6 @@ package furhatos.app.storyteller.flow
 import furhatos.app.storyteller.nlu.TellNameBriefly
 import furhatos.app.storyteller.robotName
 import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.voice.PollyNeuralVoice
 import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.gestures.Gestures
 import furhatos.nlu.common.TellName
@@ -11,20 +10,46 @@ import furhatos.util.*
 val Idle: State = state {
 
     init {
+        // set voice and face
         furhat.voice = PollyVoice.Joey()
-        furhat.mask = "Jamie"
+        furhat.setMask("adult")
+        furhat.setCharacter("Jamie")
         if (users.count > 0) {
             furhat.attend(users.random)
-            goto(OpeningScene)
+            goto(SelfPresent)
         }
     }
 
     onEntry {
-        furhat.attendNobody()
+        if (users.count > 0) {
+            if (users.other.name == null) {
+                furhat.attend(users.other)
+                goto(FetchUserName)
+            } else {
+                if (users.current.hasPlayed == false) {
+                    if (users.current.wantsPlay == true) {
+                        furhat.attend(users.current)
+                        goto(PresentGame)
+                    }
+                } else {
+                    furhat.attend(users.current)
+                    val validate: Boolean? = furhat.askYN("Do you want to play again?")
+                    if (validate == true) {
+                        goto(OpeningScene)
+                    }
+                }
+            }
+        }
     }
 
     onUserEnter {
         furhat.attend(it)
+
+        // set voice and face
+        furhat.voice = PollyVoice.Joey()
+        furhat.setMask("adult")
+        furhat.setCharacter("Jamie")
+
         goto(SelfPresent)
     }
 }
@@ -65,12 +90,17 @@ val Interaction: State = state {
 
         reentry()
     }
+}
 
+
+val CatchName: State = state(Interaction){
     /*
     Tell name in brief fashion
      */
     onResponse<TellNameBriefly> {
         users.current.name = "${it.intent.name}"
+        users.current.wantsPlay = true
+        users.current.hasPlayed = false
         goto(process_name("${it.intent.name}"))
     }
 
@@ -79,6 +109,8 @@ val Interaction: State = state {
      */
     onResponse<TellName> {
         users.current.name = "${it.intent.name}"
+        users.current.wantsPlay = true
+        users.current.hasPlayed = false
         goto(process_name("${it.intent.name}"))
     }
 
@@ -114,6 +146,8 @@ val Interaction: State = state {
 
             if (validate == true) {
                 users.current.name = it.text
+                users.current.wantsPlay = true
+                users.current.hasPlayed = false
                 random(
                     {
                         furhat.say(utterance {
