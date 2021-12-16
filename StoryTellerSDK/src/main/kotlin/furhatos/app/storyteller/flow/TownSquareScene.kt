@@ -48,16 +48,16 @@ val TalkingToJester = state(parent = TownSquareOptions) {
 
     onEntry {
         furhat.say(dialogStrings["jesterOnEntry"]!!)
-        furhat.ask("An audience! How about a joke or two?")
+        furhat.ask("\"An audience! How about a joke or two?\"")
     }
 
     onReentry {
-        furhat.ask("An audience! How about a joke or two?")
+        furhat.ask("\"How about a joke or two?\"")
     }
 
     onResponse <PleaseRepeat> {
         furhat.say(dialogStrings["jesterOnEntry"]!!)
-        furhat.ask("An audience! How about a joke or two?")
+        furhat.ask("\"An audience! How about a joke or two?\"")
     }
 
     onResponse<Yes> {
@@ -173,14 +173,14 @@ private val dialogStrings = mapOf(
                 "on the far side of the square. However, no one seems to be watching.",
         "jesterOnEntry" to
                 "The jester is juggling with some kegels but seems to keep dropping them. It becomes obvious " +
-                "why he has not drawn a crowd. He sees you approaching and puts the kegels down.",
+                "why he has not drawn a crowd. He sees you approaching and puts the kegels down. ",
         "preacherOnEntry" to
                 "The preacher is speaking about a new god, and the power that comes from worshiping him. " +
                 "With him, he has a man and a woman that he claims to have cured from blindness and sickness. " +
                 "He notices you in the crowd and turns to you.",
         "godExplanation" to
                 "Have you not heard? Is your mind still shrouded in darkness? Our lord Xoros has illuminated " +
-                "the chosen people of Millstone with his ",
+                "the chosen people of Millstone with his power.",
         "receivePassword" to
                 "He moves closer to you and whispers in your ear, too quietly for anyone else to hear. There is a gathering tonight. " +
                 "Go to the Hidden Goat Tavern and tell the man behind the bar the following. \"Dawn is breaking\". There you will find out more.",

@@ -1,5 +1,6 @@
 package furhatos.app.storyteller.utils
 
+import furhatos.flow.kotlin.Utterance
 import furhatos.flow.kotlin.utterance
 
 class JokeManager {
@@ -20,21 +21,34 @@ class JokeManager {
             )
     )
 
-    private fun getJokeUtterance(joke: Joke) = utterance {
-        joke.setup + delay(1500) + joke.punchline
+    private fun getJokeUtterance(joke: Joke): Utterance {
+        println(joke.setup)
+        println(joke.punchline)
+        return utterance {
+            +joke.setup
+            +delay(1000)
+            +joke.punchline
+            +delay(500)
+        }
     }
 
-    fun getNextJoke() = utterance {
+    fun getNextJoke(): Utterance {
         if (!hasMoreJokes()) {
             throw NoMoreJokesException()
         }
 
-        getJokeUtterance(jokes[jokeCounter])
+        val nextJoke = getJokeUtterance(jokes[jokeCounter])
+
+        println("In function")
+        println(nextJoke.parts)
+
         jokeCounter++
+
+        return nextJoke
     }
 
     fun hasMoreJokes(): Boolean {
-        return jokeCounter < jokes.size - 1
+        return jokeCounter < jokes.size
     }
 
     fun reset() {
