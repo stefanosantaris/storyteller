@@ -5,14 +5,13 @@ import furhatos.gestures.Gestures
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
-val FetchUserName : State = state(Interaction) {
+val FetchUserName : State = state(CatchName) {
     onEntry {
         if(users.current.name == null) {
             random(
                 { furhat.ask("And what about you? What is your name?") },
                 { furhat.ask("And what is your name?") },
-                { furhat.ask("And your name is what?") }
-            )
+                { furhat.ask("And your name is what?") })
         }
         else {
             goto(Idle)
@@ -24,8 +23,7 @@ val FetchUserName : State = state(Interaction) {
             random(
                 { furhat.ask("What is your name?") },
                 { furhat.ask("What was your name?") },
-                { furhat.ask("Your name is what?") }
-            )
+                { furhat.ask("Your name is what?") })
         }
         else {
             goto(Idle)
@@ -37,8 +35,7 @@ val FetchUserName : State = state(Interaction) {
             random(
                 { furhat.say("Hello? Sorry, you might have missed that.")},
                 { furhat.say("Hello, somebody out there?") },
-                { furhat.say("Did you say something?")}
-            )
+                { furhat.say("Did you say something?")})
             furhat.ask("My name is $robotName, what is yours?")
         }
     }
@@ -49,25 +46,24 @@ val SelfPresent : State = state{
         random(
             {furhat.say("Hi there. It is a pleasure to meet you. I am $robotName.")},
             {furhat.say("Hello my friend. Glad to meet you! My name is $robotName.")},
-            {furhat.say("Hi there. What a pleasure meeting you. My name is $robotName.")}
-        )
+            {furhat.say("Hi there. What a pleasure meeting you. My name is $robotName.")})
         goto(FetchUserName)
     }
 }
 
 val PresentGame : State = state{
-    var first_answer : Boolean = false
+    var firstAnswer = false
 
     onEntry {
-        first_answer = false
-        furhat.ask("${users.current.name} would you like to play a game?")
+        firstAnswer = false
+        furhat.ask("${users.current.name}, would you like to play a game?")
     }
 
     /*
     Positive response to game
      */
     onResponse<Yes> {
-        if (first_answer == false) {
+        if (!firstAnswer) {
             furhat.say(utterance {
                 +"Awesome!"
                 +blocking {
@@ -79,7 +75,7 @@ val PresentGame : State = state{
                     furhat.gesture(Gestures.Oh, async = false)
                 }
             })
-            first_answer = true
+            firstAnswer = true
             furhat.ask("Are you ready to play this game with me?")
         } else {
             furhat.say(utterance {
@@ -87,8 +83,10 @@ val PresentGame : State = state{
                 +blocking {
                     furhat.gesture(Gestures.BigSmile, async = false)
                 }
+                + delay(200)
                 +"Then let us start"
             })
+            users.current.wantsPlay = true
             goto(OpeningScene)
         }
     }
@@ -102,6 +100,8 @@ val PresentGame : State = state{
             {furhat.say("That is sad. However, thank you for your time.")},
             {furhat.say("What a pity. Maybe next time.")}
         )
+        users.current.wantsPlay = false
+        goto(Idle)
     }
 
 

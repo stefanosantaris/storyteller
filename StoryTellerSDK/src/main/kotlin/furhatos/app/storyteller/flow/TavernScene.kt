@@ -20,5 +20,5 @@ val TavernArrival = state(parent = TavernOptions) {
 
 private val dialogStrings = mapOf(
         "onArrival" to
-                ""
+                "Tavern"
 )
