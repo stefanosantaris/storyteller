@@ -124,8 +124,6 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
         furhat.say("I cannot tell you more... just let me know if you see him, okay?")
         furhat.say("Will you buy something or not? I don't have all day.")
     }
-
-
 }
 
 val ListeningToPreacher = state(parent = TownSquareOptions) {
