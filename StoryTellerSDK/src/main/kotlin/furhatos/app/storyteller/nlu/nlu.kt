@@ -10,10 +10,6 @@ class PleaseRepeat: Intent()
 
 // Alley
 
-class GoToAlley: Intent()
-
-//class TalkToWoman: Intent()
-
 class TalkToMerchant: Intent()
 
 class TalkToJester: Intent()
