@@ -5,6 +5,7 @@ import furhatos.flow.kotlin.*
 val OpeningScene : State = state(Interaction) {
 
     onEntry {
+        users.current.hasPlayed = true
         furhat.say(dialogStrings["onEntry"]!!)
         goto(AlleyArrival)
     }

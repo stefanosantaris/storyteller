@@ -16,21 +16,22 @@ val AlleyOptions : State = state(Interaction) {
     }
 
     onResponse<TalkToWoman> {
-        goto(TalkingToWoman)
+        goto(IntroDialogWoman)
     }
-
 }
 
-val AlleyArrival = state(parent = AlleyOptions) {
+val AlleyArrival = state(AlleyOptions) {
     onEntry {
         furhat.say(dialogStrings["onArrival"]!!)
         furhat.ask("What do you do?")
     }
-}
 
-val TalkingToWoman = state(parent = AlleyOptions) {
-    onEntry {
-
+    onReentry {
+        random(
+            {furhat.ask("What would you like to do?")},
+            {furhat.ask("What do you do?")},
+            {furhat.ask("What do you plan to do?")}
+        )
     }
 }
 
