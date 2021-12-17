@@ -41,7 +41,7 @@ val LeaveScene : State = state(Interaction){
     onResponse {
         random(
             {furhat.say("Could you speak up a bit! I can barely understand you.")},
-            {furhat.say("Boy you need to speak a bit clearer. I can not understand what you are saying.")},
+            {furhat.say("You need to speak a bit clearer. I can not understand what you are saying.")},
             {furhat.say("What did you say?")}
         )
         reentry()
@@ -50,7 +50,7 @@ val LeaveScene : State = state(Interaction){
     onNoResponse {
         random(
             {furhat.say("Hello? I am talking to you")},
-            {furhat.say("What is it?")},
+            {furhat.say("Please answer me")},
             {furhat.say("Why don't you answer me?")}
         )
         reentry()
@@ -73,7 +73,7 @@ val IntroDialogWoman : State = state(Interaction) {
 val  DialogWoman_1 : State = state(LeaveScene) {
     onEntry {
         // change voice and mask
-        furhat.voice = PollyVoice.Raveena()
+        furhat.voice = PollyVoice.Kimberly()
         furhat.setMask("adult")
         furhat.setCharacter("Isabel")
 
@@ -81,7 +81,7 @@ val  DialogWoman_1 : State = state(LeaveScene) {
 
         furhat.say(utterance {
             +blocking {
-                furhat.gesture(Gestures.ExpressDisgust, async = false)
+                furhat.gesture(Gestures.GazeAway, async = false)
             }
             + "What do you want?"})
         furhat.ask("You need to leave!")
@@ -92,11 +92,11 @@ val  DialogWoman_1 : State = state(LeaveScene) {
             {furhat.ask(utterance{
                 + "Why don't you leave?"
                 +blocking {
-                    furhat.gesture(Gestures.ExpressDisgust, async = false)
+                    furhat.gesture(Gestures.ExpressFear, async = false)
                 + "What do you want?"}})},
             {furhat.ask("Why are you still here? What do you want?")})
     }
-
+    
     onButton("Calm down, I am a cop. Why are you so afraid?"){
         goto(DialogWomanAnswer_1_a)
     }
@@ -118,11 +118,11 @@ val  DialogWoman_1 : State = state(LeaveScene) {
 val  DialogWomanAnswer_1_a : State = state(LeaveScene) {
     onEntry {
         furhat.ask(utterance {
-            +"You need to leave!"
+            +"I can not talk to you!"
             +blocking {
                 furhat.gesture(Gestures.Shake, async = false)
             }
-            +"If they see me with you, we will both be in trouble!"
+            +"You need to leave! If they see me with you, we will both be in trouble!"
         })
     }
 
