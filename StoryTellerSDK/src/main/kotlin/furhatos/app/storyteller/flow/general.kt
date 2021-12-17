@@ -21,6 +21,11 @@ val Idle: State = state {
         if (users.count > 0) {
             furhat.attend(users.random)
             //goto(SelfPresent)
+
+            // temp
+            users.current.visitedTavern = false
+            users.current.visitedWoman = false
+            users.current.visitedTownSquare = false
             goto(IntroDialogWoman)
         }
     }
@@ -60,8 +65,12 @@ val Idle: State = state {
         furhat.voice = PollyNeuralVoice.Joey()
         furhat.setMask("adult")
         furhat.setCharacter("Jamie")
-
         //goto(SelfPresent)
+
+        // temp
+        users.current.visitedTavern = false
+        users.current.visitedWoman = false
+        users.current.visitedTownSquare = false
         goto(IntroDialogWoman)
     }
 }
@@ -113,6 +122,9 @@ val CatchName: State = state(Interaction){
         users.current.name = "${it.intent.name}"
         users.current.wantsPlay = true
         users.current.hasPlayed = false
+        users.current.visitedTavern = false
+        users.current.visitedWoman = false
+        users.current.visitedTownSquare = false
         goto(process_name("${it.intent.name}"))
     }
 
@@ -123,6 +135,9 @@ val CatchName: State = state(Interaction){
         users.current.name = "${it.intent.name}"
         users.current.wantsPlay = true
         users.current.hasPlayed = false
+        users.current.visitedTavern = false
+        users.current.visitedWoman = false
+        users.current.visitedTownSquare = false
         goto(process_name("${it.intent.name}"))
     }
 
@@ -160,6 +175,9 @@ val CatchName: State = state(Interaction){
                 users.current.name = it.text
                 users.current.wantsPlay = true
                 users.current.hasPlayed = false
+                users.current.visitedTavern = false
+                users.current.visitedWoman = false
+                users.current.visitedTownSquare = false
                 random(
                     {
                         furhat.say(utterance {
