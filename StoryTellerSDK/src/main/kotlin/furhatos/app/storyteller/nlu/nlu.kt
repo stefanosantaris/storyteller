@@ -25,6 +25,92 @@ class TellNameBriefly(val name : Name? = null): Intent() {
     }
 }
 
+/*
+Scene Changing Intends
+ */
+
+// Go to other scene
+class Leave : EnumEntity(stemming = false, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "leave and go into the",
+            "go into the",
+            "into the",
+            "go to the",
+            "go into",
+            "go to",
+            "change to",
+            "change to the",
+            "I want to go to the",
+            "I want to go into the",
+            "I want to leave to the",
+            "leave to the",
+            "leave to",
+            "leave"
+        )
+    }
+}
+
+// Leave to tavern
+class Tavern : EnumEntity(stemming = true, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "Tavern",
+            "tavern",
+            "Bar",
+            "bar"
+        )
+    }
+}
+
+class LeaveToTavern(val leave : Leave? = null, val tavern : Tavern? = null): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("@leave @tavern", "@tavern")
+    }
+}
+
+// Leave to town square
+class TownSquare : EnumEntity(stemming = false, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "Town square",
+            "town square",
+            "Townsquare",
+            "townsquare",
+            "Market",
+            "market",
+            "Market place",
+            "market place"
+        )
+    }
+}
+
+class LeaveToTownSquare(val leave : Leave? = null, val townsquare : TownSquare? = null): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("@leave @townsquare", "@townsquare")
+    }
+}
+
+// Leave to Alley
+class Alley : EnumEntity(stemming = false, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "Alley",
+            "alley",
+            "Alli",
+            "alli",
+            "Ali",
+            "ali"
+        )
+    }
+}
+
+class LeaveToAlley(val leave : Leave? = null, val alley : Alley? = null): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("@leave @alley", "@alley")
+    }
+}
+
 // General
 
 class PleaseRepeat: Intent()
