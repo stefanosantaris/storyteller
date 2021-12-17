@@ -1,8 +1,12 @@
 package furhatos.app.storyteller.nlu
 
+import furhatos.nlu.EnumEntity
 import furhatos.nlu.Intent
 import furhatos.util.Language
 
+/*
+Dialogue possibilities
+ */
 class DialogWomanAnswer_1_a : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("calm down, I am a cop. Why are you so afraid", "I am a cop. Why are you so afraid?", "calm down",
@@ -23,15 +27,157 @@ class DialogWomanAnswer_1_a_a : Intent() {
     }
 }
 
-class LeaveToTavern : Intent() {
-    override fun getExamples(lang: Language): List<String> {
-        return listOf("leave and go into the tavern", "tavern", "go into the tavern", "go to the tavern", "into the tavern")
+/*
+Express that you are a police man
+ */
+class Cop : EnumEntity(stemming = false, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "Cop",
+            "cop",
+            "Copp",
+            "copp",
+            "Police",
+            "police",
+            "Policeman",
+            "policeman",
+            "Police man",
+            "police man",
+            "Police men",
+            "police men",
+            "Officer",
+            "officer",
+            "Police woman",
+            "police woman",
+            "Police women",
+            "police women",
+            "law",
+            "Cup",
+            "cup"
+        )
     }
 }
 
-class LeaveToTownSquare : Intent() {
+class IamCop(val cop : Cop? = null): Intent() {
     override fun getExamples(lang: Language): List<String> {
-        return listOf("Leave and go to the town square", "go to the town square", "town square", "to the town square", "townsquare")
+        return listOf("I am a @cop", "a @cop", "I'm a @cop", "@cop", "as a @cop", "I am from the @cop", "relax I'm a @cop")
+    }
+}
+
+/*
+Express that you follow a man
+ */
+
+class TattooMan : EnumEntity(stemming = false, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "Man",
+            "man",
+            "Men",
+            "men",
+            "Tattoo",
+            "tattoo",
+            "Man with a tattoo",
+            "man with a tattoo",
+            "with a tattoo",
+            "tattoo on his arm",
+            "Tattoo on his arm"
+        )
+    }
+}
+
+class FollowMan(val tattooman : TattooMan? = null): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("Have you seen the @tattooman", "have you seen the @tattooman", "Have you seen a @tattooman", "have you seen a @tattooman",
+        "I am looking for a @tattooman", "@tattooman", "I am following a @tattooman", "seen a @tattooman")
+    }
+}
+
+/*
+Ask about the tavern
+ */
+class WhatIsThisPlace : EnumEntity(stemming = true, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "What do you know about",
+            "what do you know about",
+            "What is this",
+            "what is this",
+            "Can you tell me what this",
+            "can you tell me what this",
+            "tell me what is this"
+        )
+    }
+}
+
+class AskAboutTavern(val askplace : WhatIsThisPlace? = null, val tavern : Tavern? = null): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("@askplace @tavern", "@askplace", "What is this place", "what is this place")
+    }
+}
+
+
+/*
+Express that you want to leave
+ */
+class Leave : EnumEntity(stemming = false, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "leave and go into the",
+            "go into the",
+            "into the",
+            "go to the",
+            "go to",
+            "change to",
+            "change to the",
+            "I want to go to the",
+            "I want to go into the",
+            "I want to leave to the",
+            "leave to the"
+        )
+    }
+}
+/*
+Express that you want to leave and go to the tavern
+ */
+class Tavern : EnumEntity(stemming = true, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "Tavern",
+            "tavern",
+            "Bar",
+            "bar"
+        )
+    }
+}
+
+class LeaveToTavern(val leave : Leave? = null, val tavern : Tavern? = null): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("@leave @tavern", "@tavern")
+    }
+}
+
+/*
+Express that you want to leave and go to the town square
+ */
+class TownSquare : EnumEntity(stemming = false, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+            "Town square",
+            "town square",
+            "Townsquare",
+            "townsquare",
+            "Market",
+            "market",
+            "Market place",
+            "market place"
+        )
+    }
+}
+
+class LeaveToTownSquare(val leave : Leave? = null, val townsquare : TownSquare? = null): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("@leave @townsquare", "@townsquare")
     }
 }
 

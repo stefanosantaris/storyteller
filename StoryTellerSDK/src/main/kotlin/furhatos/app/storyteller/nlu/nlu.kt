@@ -4,19 +4,9 @@ import furhatos.nlu.EnumEntity
 import furhatos.nlu.Intent
 import furhatos.util.Language
 
-// General
-
-class PleaseRepeat: Intent()
-
-// Alley
-
-class TalkToMerchant: Intent()
-
-class TalkToJester: Intent()
-
-class ListenToPreacher: Intent()
-
-class GoToAlley: Intent()
+/*
+Game Setup and Name Fetching
+ */
 
 class Name : EnumEntity(stemming = false, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
@@ -35,19 +25,20 @@ class TellNameBriefly(val name : Name? = null): Intent() {
     }
 }
 
-class Woman : EnumEntity(stemming = false, speechRecPhrases = true) {
-    override fun getEnum(lang: Language): List<String> {
-        return listOf(
-            "Woman", "woman", "Women", "women", "Worman", "worman", "Wolman", "wolman")
-    }
-}
+// General
 
-class TalkToWoman(val woman : Woman? = null): Intent() {
-    override fun getExamples(lang: Language): List<String> {
-        return listOf("I talk to the @woman", "I will talk to the @woman", "I like to talk to the @woman", "I go to the @woman",
-        "talk to the @woman", "talk with the @woman", "@woman", "go to @woman")
-    }
-}
+class PleaseRepeat: Intent()
+
+// Alley
+
+class TalkToMerchant: Intent()
+
+class TalkToJester: Intent()
+
+class ListenToPreacher: Intent()
+
+class GoToAlley: Intent()
+
 class RequestGodExplanation: Intent()
 
 class AskMerchantAboutCult: Intent()
