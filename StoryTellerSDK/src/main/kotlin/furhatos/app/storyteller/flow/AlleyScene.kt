@@ -22,8 +22,20 @@ val AlleyOptions : State = state(Interaction) {
 
 val AlleyArrival = state(AlleyOptions) {
     onEntry {
-        furhat.say(dialogStrings["onArrival"]!!)
-        furhat.ask("What do you do?")
+        if (users.current.visitedAlley == false) {
+            furhat.say(dialogStrings["onArrival1"]!!)
+            furhat.say(dialogStrings["onArrival2"]!!)
+            furhat.say(dialogStrings["onArrival3"]!!)
+            users.current.visitedAlley = true
+        } else {
+            furhat.say(dialogStrings["onReArrival1"]!!)
+            furhat.say(dialogStrings["onReArrival2"]!!)
+        }
+        random(
+            {furhat.ask("What would you like to do?")},
+            {furhat.ask("What do you do?")},
+            {furhat.ask("What do you plan to do?")}
+        )
     }
 
     onReentry {
@@ -36,8 +48,14 @@ val AlleyArrival = state(AlleyOptions) {
 }
 
 private val dialogStrings = mapOf(
-        "onArrival" to
-                "Above the door where you say the man disappear there is a sign with the words " +
-                "\"The Hidden Goat Tavern\". Next to the door a woman is standing, looking around nervously. " +
-                "Up ahead you hear noises from a town square."
+        "onArrival1" to
+                "Above the door where you say the man disappear there is a sign with the words \"The Hidden Goat Tavern\".",
+        "onArrival2" to
+                "Next to the door a woman is standing, looking around nervously.",
+        "onArrival3" to
+                "Up ahead you hear noises from a town square.",
+        "onReArrival1" to
+                "As you walk into the alley again, you still see the woman leaning against the tavern's wall.",
+        "onReArrival2" to
+                "Up ahead you still hear noises from a town square and \"The Hidden Goat Tavern\" is just in front of you."
 )

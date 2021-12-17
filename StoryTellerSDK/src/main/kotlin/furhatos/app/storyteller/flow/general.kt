@@ -26,6 +26,7 @@ val Idle: State = state {
             users.current.visitedTavern = false
             users.current.visitedWoman = false
             users.current.visitedTownSquare = false
+            users.current.visitedAlley = false
             goto(IntroDialogWoman)
         }
     }
@@ -71,6 +72,7 @@ val Idle: State = state {
         users.current.visitedTavern = false
         users.current.visitedWoman = false
         users.current.visitedTownSquare = false
+        users.current.visitedAlley = false
         goto(IntroDialogWoman)
     }
 }

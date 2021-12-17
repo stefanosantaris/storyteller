@@ -59,14 +59,21 @@ val LeaveScene : State = state(Interaction){
 
 val IntroDialogWoman : State = state(Interaction) {
     onEntry {
-        furhat.say(utterance {
-            +"You are approaching the woman who is leaning against a wall smoking. "
-            +delay(100)
-            +"As you take a closer look at her, you notice that she seems anxious. You even note that she is slightly shaking. "
-            +delay(100)
-            +"Once she notices you, she seems freaked out."
-        })
-        goto(DialogWoman_1)
+        if (users.current.visitedWoman == false) {
+            furhat.say(utterance {
+                +"You are approaching the woman who is leaning against a wall smoking. "
+                +delay(100)
+                +"As you take a closer look at her, you notice that she seems anxious. You even note that she is slightly shaking. "
+                +delay(100)
+                +"Once she notices you, she seems freaked out."
+            })
+            goto(DialogWoman_1)
+        } else {
+            random(
+                {furhat.say("As you approach the woman again, she spots you and rolls her eyes.")},
+                {furhat.say("You again approach the woman who is leaning against the wall. As she notices you, she seems upset.")})
+            goto(DialogWoman_1)
+        }
     }
 }
 
@@ -79,20 +86,36 @@ val  DialogWoman_1 : State = state(parent = LeaveScene) {
 
         delay(600)
 
-        furhat.say(utterance {
-            +blocking {
-                furhat.gesture(Gestures.GazeAway, async = false)
-            }
-            + "What do you want?"})
-        furhat.ask("You need to leave!")
+        if (users.current.visitedWoman == false) {
+            users.current.visitedWoman = true
+            furhat.say(utterance {
+                +blocking {
+                    furhat.gesture(Gestures.GazeAway, async = false)
+                }
+                +"What do you want?"
+            })
+            furhat.ask("You need to leave!")
+        } else {
+            random(
+                {furhat.say(utterance {
+                    + "Not you again!"
+                    + blocking {furhat.gesture(Gestures.ExpressDisgust, async = false)}})},
+                {furhat.say(utterance {
+                    + "It is you again!"
+                    + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}})},
+                {furhat.say(utterance {
+                    + "Seriously, you again?"
+                    + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}})}
+            )
+            goto(DialogWomanAnswer_1_preacherHint)
+        }
     }
 
     onReentry {
         random(
             {furhat.ask(utterance{
                 + "Why don't you leave?"
-                +blocking {
-                    furhat.gesture(Gestures.ExpressFear, async = false)
+                +blocking {furhat.gesture(Gestures.ExpressFear, async = false)
                 + "What do you want?"}})},
             {furhat.ask("Why are you still here? What do you want?")})
     }
