@@ -39,6 +39,9 @@ class Leave : EnumEntity(stemming = false, speechRecPhrases = true) {
             "go to the",
             "go into",
             "go to",
+            "go back",
+            "go back to",
+            "change",
             "change to",
             "change to the",
             "I want to go to the",
@@ -46,7 +49,9 @@ class Leave : EnumEntity(stemming = false, speechRecPhrases = true) {
             "I want to leave to the",
             "leave to the",
             "leave to",
-            "leave"
+            "leave",
+            "switch to",
+            "switch"
         )
     }
 }
@@ -100,7 +105,10 @@ class Alley : EnumEntity(stemming = false, speechRecPhrases = true) {
             "Alli",
             "alli",
             "Ali",
-            "ali"
+            "ali",
+            "Kelly",
+            "l.a.",
+            "LA"
         )
     }
 }
