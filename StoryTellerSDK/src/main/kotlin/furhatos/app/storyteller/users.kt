@@ -10,6 +10,7 @@ var User.wantsPlay : Boolean? by UserDataDelegate()
 /*
 Scene memory
  */
+var User.visitedAlley : Boolean? by UserDataDelegate()
 var User.visitedTavern : Boolean? by UserDataDelegate()
 var User.visitedTownSquare : Boolean? by UserDataDelegate()
 var User.visitedWoman : Boolean? by UserDataDelegate()
