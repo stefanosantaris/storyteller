@@ -7,7 +7,7 @@ import furhatos.gestures.Gestures
 
 val LeaveScene : State = state(Interaction){
     onButton("Leave and go into the tavern"){
-        furhat.voice = PollyVoice.Joey()
+        furhat.voice = PollyNeuralVoice.Joey()
         furhat.setCharacter("Jamie")
         delay(600)
 
@@ -15,7 +15,7 @@ val LeaveScene : State = state(Interaction){
     }
 
     onResponse<LeaveToTavern> {
-        furhat.voice = PollyVoice.Joey()
+        furhat.voice = PollyNeuralVoice.Joey()
         furhat.setCharacter("Jamie")
         delay(600)
 
@@ -23,7 +23,7 @@ val LeaveScene : State = state(Interaction){
     }
 
     onButton("Leave and go to the town square"){
-        furhat.voice = PollyVoice.Joey()
+        furhat.voice = PollyNeuralVoice.Joey()
         furhat.setCharacter("Jamie")
         delay(600)
 
@@ -31,7 +31,7 @@ val LeaveScene : State = state(Interaction){
     }
 
     onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyVoice.Joey()
+        furhat.voice = PollyNeuralVoice.Joey()
         furhat.setCharacter("Jamie")
         delay(600)
 
@@ -70,10 +70,10 @@ val IntroDialogWoman : State = state(Interaction) {
     }
 }
 
-val  DialogWoman_1 : State = state(LeaveScene) {
+val  DialogWoman_1 : State = state(parent = LeaveScene) {
     onEntry {
         // change voice and mask
-        furhat.voice = PollyVoice.Kimberly()
+        furhat.voice = PollyNeuralVoice.Kimberly()
         furhat.setMask("adult")
         furhat.setCharacter("Isabel")
 
@@ -96,21 +96,37 @@ val  DialogWoman_1 : State = state(LeaveScene) {
                 + "What do you want?"}})},
             {furhat.ask("Why are you still here? What do you want?")})
     }
-    
-    onButton("Calm down, I am a cop. Why are you so afraid?"){
+
+    onResponse<IamCop> {
+        goto(DialogWomanAnswer_Cop)
+    }
+
+    onResponse<FollowMan> {
+        goto(DialogWomanAnswer_TattooMan)
+    }
+
+    onResponse<AskAboutTavern> {
+        goto(DialogWomanAnswer_InfoAboutTavern)
+    }
+
+    onResponse<LeaveToTavern> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TavernArrival)
+    }
+
+    onResponse<LeaveToTownSquare> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TownSquareArrival)
+    }
+
+    onResponse {
         goto(DialogWomanAnswer_1_a)
-    }
-
-    onResponse<DialogWomanAnswer_1_a> {
-        goto(DialogWomanAnswer_1_a)
-    }
-
-    onButton("Relax! I don’t want to harm you. What is this place here?"){
-        goto(DialogWomanAnswer_1_preacherHint)
-    }
-
-    onResponse<DialogWomanAnswer_1_b> {
-        goto(DialogWomanAnswer_1_preacherHint)
     }
 }
 
@@ -122,36 +138,197 @@ val  DialogWomanAnswer_1_a : State = state(LeaveScene) {
             +blocking {
                 furhat.gesture(Gestures.Shake, async = false)
             }
-            +"You need to leave! If they see me with you, we will both be in trouble!"
+            +"You need to leave now! If they see me with you, we will both be in trouble!"
         })
     }
 
-    onButton("Who are them?"){
-        goto(DialogWomanAnswer_1_preacherHint)
-    }
-
-    onResponse<DialogWomanAnswer_1_a_a> {
-        goto(DialogWomanAnswer_1_preacherHint)
-    }
-
     onReentry {
-        furhat.listen(4000)
+        furhat.listen(6000)
+    }
+
+    onResponse<IamCop> {
+        goto(DialogWomanAnswer_Cop)
+    }
+
+    onResponse<FollowMan> {
+        goto(DialogWomanAnswer_TattooMan)
+    }
+
+    onResponse<AskAboutTavern> {
+        goto(DialogWomanAnswer_InfoAboutTavern)
+    }
+
+    onResponse<LeaveToTavern> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TavernArrival)
+    }
+
+    onResponse<LeaveToTownSquare> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TownSquareArrival)
+    }
+
+    onResponse {
+        goto(DialogWomanAnswer_1_preacherHint)
     }
 }
 
 val  DialogWomanAnswer_1_preacherHint : State = state(LeaveScene) {
     onEntry {
         furhat.ask(utterance {
-            +"I cannot tell you!"
+            +"As I already told you, I cannot tell you anything!"
             +blocking {
-                furhat.gesture(Gestures.Shake, async = false)
+                furhat.gesture(Gestures.GazeAway, async = false)
             }
-            +"Leave right now, or we will both be in danger! If you really want to know more, talk to the preacher on the market"
+            +"Leave right now, or we will both be in danger! If you really want to know more, talk to the preacher at the town square."
         })
     }
 
     onReentry {
-        furhat.listen(4000)
+        furhat.listen(6000)
+    }
+
+    onNoResponse {
+        random(
+            {furhat.say("Please go now!")},
+            {furhat.say("You need to leave, now!")},
+            {furhat.say("Why are you still here? You need to leave. Now!")})
+        reentry()
+    }
+
+    onResponse<LeaveToTavern> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TavernArrival)
+    }
+
+    onResponse<LeaveToTownSquare> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TownSquareArrival)
+    }
+
+    onResponse {
+        random(
+            {furhat.say(utterance{
+                + blocking {furhat.gesture(Gestures.Shake, async = false)}
+                + "Please go now!"})},
+            {furhat.say(utterance{
+                + blocking {furhat.gesture(Gestures.Shake, async = false)}
+                + "You need to leave, now!"})},
+            {furhat.say(utterance{
+                + blocking {furhat.gesture(Gestures.Shake, async = false)}
+                + "Why are you still here? You need to leave. Now!"})})
+        reentry()
     }
 }
+
+val DialogWomanAnswer_Cop : State = state(DialogWomanAnswer_1_preacherHint) {
+    onEntry {
+        furhat.ask(utterance {
+            + blocking { furhat.gesture(Gestures.ExpressFear, async = false) }
+            +"Look, you need to leave right now. If they find out you are a cop, they will kill you!"
+            +"If you really want to know more, talk to the preacher on the town square!"
+        })
+    }
+}
+
+val  DialogWomanAnswer_TattooMan : State = state(LeaveScene) {
+    onEntry {
+        furhat.ask(utterance {
+            +"I have seen no man!"
+            +blocking {
+                furhat.gesture(Gestures.Shake, async = false)
+            }
+            +"You need to leave now! If they see me with you, we will both be in trouble!"
+        })
+    }
+
+    onReentry {
+        furhat.listen(6000)
+    }
+
+    onResponse<IamCop> {
+        goto(DialogWomanAnswer_Cop)
+    }
+
+    onResponse<AskAboutTavern> {
+        goto(DialogWomanAnswer_InfoAboutTavern)
+    }
+
+    onResponse<LeaveToTavern> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TavernArrival)
+    }
+
+    onResponse<LeaveToTownSquare> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TownSquareArrival)
+    }
+
+    onResponse {
+        goto(DialogWomanAnswer_1_preacherHint)
+    }
+}
+
+val  DialogWomanAnswer_InfoAboutTavern : State = state(LeaveScene) {
+    onEntry {
+        furhat.ask(utterance {
+            +"Look, this place is not a good place."
+            +blocking {
+                furhat.gesture(Gestures.Shake, async = false)
+            }
+            +"If I were you, I would leave and NOT go in there!"
+        })
+    }
+
+    onReentry {
+        furhat.listen(6000)
+    }
+
+    onResponse<IamCop> {
+        goto(DialogWomanAnswer_Cop)
+    }
+
+    onResponse<FollowMan> {
+        goto(DialogWomanAnswer_TattooMan)
+    }
+
+    onResponse<LeaveToTavern> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TavernArrival)
+    }
+
+    onResponse<LeaveToTownSquare> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(TownSquareArrival)
+    }
+
+    onResponse {
+        goto(DialogWomanAnswer_1_preacherHint)
+    }
+}
+
 

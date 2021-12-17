@@ -2,6 +2,7 @@ package furhatos.app.storyteller.flow
 import furhatos.app.storyteller.nlu.TellNameBriefly
 import furhatos.app.storyteller.robotName
 import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.voice.PollyNeuralVoice
 import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.gestures.Gestures
 import furhatos.nlu.common.TellName
@@ -9,9 +10,12 @@ import furhatos.util.*
 
 val Idle: State = state {
 
+    /*
+    Initial state
+     */
     init {
         // set voice and face
-        furhat.voice = PollyVoice.Joey()
+        furhat.voice = PollyNeuralVoice.Joey()
         furhat.setMask("adult")
         furhat.setCharacter("Jamie")
         if (users.count > 0) {
@@ -21,6 +25,9 @@ val Idle: State = state {
         }
     }
 
+    /*
+    On entry
+     */
     onEntry {
         if (users.count > 0) {
             if (users.other.name == null) {
@@ -43,15 +50,19 @@ val Idle: State = state {
         }
     }
 
+    /*
+    If a users enters the state
+     */
     onUserEnter {
         furhat.attend(it)
 
         // set voice and face
-        furhat.voice = PollyVoice.Joey()
+        furhat.voice = PollyNeuralVoice.Joey()
         furhat.setMask("adult")
         furhat.setCharacter("Jamie")
 
-        goto(SelfPresent)
+        //goto(SelfPresent)
+        goto(IntroDialogWoman)
     }
 }
 
