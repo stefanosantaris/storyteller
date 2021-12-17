@@ -4,11 +4,11 @@ import furhatos.nlu.EnumEntity
 import furhatos.nlu.Intent
 import furhatos.util.Language
 
-class GoToTownSquare: Intent()
+// General
 
-class EnterTavern: Intent()
+class PleaseRepeat: Intent()
 
-//class TalkToWoman: Intent()
+// Alley
 
 class TalkToMerchant: Intent()
 
@@ -48,3 +48,12 @@ class TalkToWoman(val woman : Woman? = null): Intent() {
         "talk to the @woman", "talk with the @woman", "@woman", "go to @woman")
     }
 }
+class RequestGodExplanation: Intent()
+
+class AskMerchantAboutCult: Intent()
+
+class AskAboutBrother: Intent()
+
+// Tavern
+
+class EnterTavern: Intent()

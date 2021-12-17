@@ -16,7 +16,8 @@ val Idle: State = state {
         furhat.setCharacter("Jamie")
         if (users.count > 0) {
             furhat.attend(users.random)
-            goto(SelfPresent)
+            //goto(SelfPresent)
+            goto(IntroDialogWoman)
         }
     }
 
