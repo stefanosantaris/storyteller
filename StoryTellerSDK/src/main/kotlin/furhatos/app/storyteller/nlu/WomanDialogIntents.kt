@@ -53,7 +53,17 @@ class Cop : EnumEntity(stemming = false, speechRecPhrases = true) {
             "police women",
             "law",
             "Cup",
-            "cup"
+            "cup",
+            "Sheriff",
+            "sheriff",
+            "Watchmen",
+            "watchmen",
+            "Watch man",
+            "watch man",
+            "Watch men",
+            "watch men",
+            "Detective",
+            "detective"
         )
     }
 }
