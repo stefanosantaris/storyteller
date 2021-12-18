@@ -27,6 +27,8 @@ val Idle: State = state {
             users.current.visitedWoman = false
             users.current.visitedTownSquare = false
             users.current.visitedAlley = false
+            users.current.talkedToBartender = false
+            users.current.talkedToWhisperingMen = false
             goto(IntroDialogWoman)
         }
     }
@@ -73,6 +75,9 @@ val Idle: State = state {
         users.current.visitedWoman = false
         users.current.visitedTownSquare = false
         users.current.visitedAlley = false
+        users.current.talkedToBartender = false
+        users.current.talkedToWhisperingMen = false
+
         goto(IntroDialogWoman)
     }
 }
@@ -127,6 +132,8 @@ val CatchName: State = state(Interaction){
         users.current.visitedTavern = false
         users.current.visitedWoman = false
         users.current.visitedTownSquare = false
+        users.current.talkedToBartender = false
+        users.current.talkedToWhisperingMen = false
         goto(process_name("${it.intent.name}"))
     }
 
@@ -140,6 +147,8 @@ val CatchName: State = state(Interaction){
         users.current.visitedTavern = false
         users.current.visitedWoman = false
         users.current.visitedTownSquare = false
+        users.current.talkedToBartender = false
+        users.current.talkedToWhisperingMen = false
         goto(process_name("${it.intent.name}"))
     }
 
@@ -180,6 +189,8 @@ val CatchName: State = state(Interaction){
                 users.current.visitedTavern = false
                 users.current.visitedWoman = false
                 users.current.visitedTownSquare = false
+                users.current.talkedToBartender = false
+                users.current.talkedToWhisperingMen = false
                 random(
                     {
                         furhat.say(utterance {

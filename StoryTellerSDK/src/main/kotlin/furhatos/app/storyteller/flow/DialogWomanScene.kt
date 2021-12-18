@@ -88,12 +88,7 @@ val  DialogWoman_1 : State = state(parent = LeaveScene) {
 
         if (users.current.visitedWoman == false) {
             users.current.visitedWoman = true
-            furhat.say(utterance {
-                +blocking {
-                    furhat.gesture(Gestures.GazeAway, async = false)
-                }
-                +"What do you want?"
-            })
+            furhat.say("What do you want?")
             furhat.ask("You need to leave!")
         } else {
             random(
@@ -263,6 +258,10 @@ val DialogWomanAnswer_Cop : State = state(DialogWomanAnswer_1_preacherHint) {
             +"Look, you need to leave right now. If they find out you are a cop, they will kill you!"
             +"If you really want to know more, talk to the preacher on the town square!"
         })
+    }
+
+    onReentry {
+        furhat.listen(6000)
     }
 }
 

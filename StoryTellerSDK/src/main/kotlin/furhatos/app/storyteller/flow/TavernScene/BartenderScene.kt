@@ -11,11 +11,18 @@ import furhatos.nlu.common.Yes
 
 val IntroBartender : State = state(Interaction) {
     onEntry {
-        furhat.say(utterance {
-            + "While approaching, the bartender critically examines you."
-            + delay(100)
-            + "He is a tall, muscular man with a hard face and plenty of tattoos."
-        })
+        if ( users.current.talkedToBartender == false) {
+            furhat.say(utterance {
+                +"While approaching, the bartender critically examines you."
+                +delay(100)
+                +"He is a tall, muscular man with a hard face and plenty of tattoos."
+            })
+        } else {
+            random(
+                {furhat.say("As you walk to the bartender again, he looks up at you and frowns.")},
+                {furhat.say("While you approach the bartender again, he looks at you annoyed.")},
+                {furhat.say("You decide to go to the bartender again. As he sees you, he shakes his head.")})
+        }
         goto(DialogBartender_1)
     }
 }
@@ -28,12 +35,20 @@ val DialogBartender_1 = state(parent = TavernOptions) {
 
         delay(600)
 
-        furhat.say(utterance {
-            +blocking {
-                furhat.gesture(Gestures.ExpressDisgust, async = false)
-            }
-            + "What do you want little rascal?"})
-        furhat.ask("You don’t look like you should be in a bar like this. Why are you here?")
+        if ( users.current.talkedToBartender == false) {
+            users.current.talkedToBartender = true
+            furhat.say(utterance {
+                + blocking {furhat.gesture(Gestures.ExpressDisgust, async = false)}
+                + "What do you want little rascal?"
+            })
+            furhat.ask("You don’t look like you should be in a bar like this. Why are you here?")
+        } else {
+            furhat.say(utterance {
+                + blocking {furhat.gesture(Gestures.Shake, async = false)}
+                + "You again?"
+            })
+            furhat.ask("Didn't I tell you to leave, little rascal? What do you want?")
+        }
     }
 
     onReentry {
@@ -123,14 +138,14 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             {furhat.ask(utterance {
                 + "You might be at the right place."
                 + blocking {furhat.gesture(Gestures.Surprise, async = false)}
-                + "Tell me the password and I can tekk you more."})}
+                + "Tell me the password and I can tell you more."})}
         )
     }
 
     onResponse<TellPassword> {
         furhat.say(utterance {
             + blocking {furhat.gesture(Gestures.Oh, async = false)}
-            + "Oh! Sorry Sir, I did not know that you are a member of the cult."
+            + "Oh! Sorry Sir, I did not know that you are a member of the circle."
             + "Please follow me, I will lead you to the others"
         })
     }
@@ -140,6 +155,14 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             {furhat.ask("Why don't you answer me? Are you too afraid to speak?")},
             {furhat.ask("Answer me!")},
             {furhat.ask("Are you afraid or why don't you say something?")})
+    }
+
+    onResponse<TalkToWhisperingMen> {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setCharacter("Jamie")
+        delay(600)
+
+        goto(IntroWhisperingMen)
     }
 
     onResponse<LeaveToAlley> {
@@ -204,9 +227,8 @@ val DialogBartender_FightScene : State = state(parent = TavernOptions) {
         furhat.voice = PollyNeuralVoice.Joey()
         delay(600)
         furhat.say("You immediately turn around, but the bartender is too fast. The last thing you see is a club aiming for your head.")
-        furhat.say("Then, it gets dark")
-
-        delay(600)
+        furhat.say("Then, it gets dark...")
+        delay(1000)
         furhat.say("Unfortunately, you lost the game.")
         goto(Idle)
     }
