@@ -143,6 +143,8 @@ class Password : EnumEntity(stemming = false, speechRecPhrases = true) {
         return listOf(
             "Password",
             "password",
+            "Passwords",
+            "password",
             "Magic word",
             "magic word",
             "Magic Sentence",
