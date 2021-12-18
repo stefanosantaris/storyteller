@@ -21,7 +21,7 @@ val TownSquareOptions : State = state(Interaction) {
         goto(ListeningToPreacher)
     }
 
-    onResponse<GoToAlley> {
+    onResponse<LeaveToAlley> {
         goto(AlleyArrival)
     }
 

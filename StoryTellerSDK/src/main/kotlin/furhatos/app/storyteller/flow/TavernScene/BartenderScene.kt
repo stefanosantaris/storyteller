@@ -132,7 +132,7 @@ val DialogBartender_1 = state(parent = TavernOptions) {
     onResponse<HintAtPassword> {
         random(
             {furhat.ask(utterance {
-                + "Hmmh"
+                + "Hmm"
                 + blocking {furhat.gesture(Gestures.GazeAway, async = false)}
                 + "I might be able to tell you more if you tell me the password."})},
             {furhat.ask(utterance {
