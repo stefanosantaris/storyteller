@@ -10,22 +10,84 @@ import furhatos.util.*
 
 val Idle: State = state {
 
+    /*
+    Initial state
+     */
     init {
-        furhat.voice = PollyVoice.Joey()
-        furhat.mask = "Jamie"
+        // set voice and face
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setMask("adult")
+        furhat.setCharacter("Jamie")
         if (users.count > 0) {
             furhat.attend(users.random)
-            goto(OpeningScene)
+            goto(SelfPresent)
+
+            /*
+            // temp
+            users.current.visitedTavern = false
+            users.current.visitedWoman = false
+            users.current.visitedTownSquare = false
+            users.current.visitedAlley = false
+            users.current.talkedToBartender = false
+            users.current.talkedToWhisperingMen = false
+            goto(IntroDialogWoman)
+            */
         }
     }
 
+    /*
+    On entry
+     */
     onEntry {
-        furhat.attendNobody()
+        if (users.count > 0) {
+            if (users.other.name == null) {
+                furhat.attend(users.other)
+                goto(FetchUserName)
+            } else {
+                if (users.current.hasPlayed == false) {
+                    if (users.current.wantsPlay == true) {
+                        furhat.attend(users.current)
+                        goto(PresentGame)
+                    }
+                } else {
+                    furhat.attend(users.current)
+                    val validate: Boolean? = furhat.askYN("Do you want to play again?")
+                    if (validate == true) {
+                        users.current.visitedTavern = false
+                        users.current.visitedWoman = false
+                        users.current.visitedTownSquare = false
+                        users.current.visitedAlley = false
+                        users.current.talkedToBartender = false
+                        users.current.talkedToWhisperingMen = false
+                        goto(OpeningScene)
+                    }
+                }
+            }
+        }
     }
 
+    /*
+    If a users enters the state
+     */
     onUserEnter {
         furhat.attend(it)
+
+        // set voice and face
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.setMask("adult")
+        furhat.setCharacter("Jamie")
         goto(SelfPresent)
+
+        /*
+        // temp
+        users.current.visitedTavern = false
+        users.current.visitedWoman = false
+        users.current.visitedTownSquare = false
+        users.current.visitedAlley = false
+        users.current.talkedToBartender = false
+        users.current.talkedToWhisperingMen = false
+        goto(IntroDialogWoman)
+         */
     }
 }
 
@@ -65,12 +127,23 @@ val Interaction: State = state {
 
         reentry()
     }
+}
 
+
+val CatchName: State = state(Interaction){
     /*
     Tell name in brief fashion
      */
     onResponse<TellNameBriefly> {
         users.current.name = "${it.intent.name}"
+        users.current.wantsPlay = true
+        users.current.hasPlayed = false
+        users.current.visitedTavern = false
+        users.current.visitedWoman = false
+        users.current.visitedTownSquare = false
+        users.current.visitedAlley = false
+        users.current.talkedToBartender = false
+        users.current.talkedToWhisperingMen = false
         goto(process_name("${it.intent.name}"))
     }
 
@@ -79,6 +152,14 @@ val Interaction: State = state {
      */
     onResponse<TellName> {
         users.current.name = "${it.intent.name}"
+        users.current.wantsPlay = true
+        users.current.hasPlayed = false
+        users.current.visitedTavern = false
+        users.current.visitedWoman = false
+        users.current.visitedTownSquare = false
+        users.current.visitedAlley = false
+        users.current.talkedToBartender = false
+        users.current.talkedToWhisperingMen = false
         goto(process_name("${it.intent.name}"))
     }
 
@@ -114,6 +195,14 @@ val Interaction: State = state {
 
             if (validate == true) {
                 users.current.name = it.text
+                users.current.wantsPlay = true
+                users.current.hasPlayed = false
+                users.current.visitedTavern = false
+                users.current.visitedWoman = false
+                users.current.visitedTownSquare = false
+                users.current.visitedAlley = false
+                users.current.talkedToBartender = false
+                users.current.talkedToWhisperingMen = false
                 random(
                     {
                         furhat.say(utterance {

@@ -4,7 +4,6 @@ import furhatos.app.storyteller.nlu.*
 import furhatos.app.storyteller.utils.JokeManager
 import furhatos.app.storyteller.utils.NoMoreJokesException
 import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
@@ -22,7 +21,7 @@ val TownSquareOptions : State = state(Interaction) {
         goto(ListeningToPreacher)
     }
 
-    onResponse<GoToAlley> {
+    onResponse<LeaveToAlley> {
         goto(AlleyArrival)
     }
 
@@ -157,8 +156,6 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
         furhat.say("I cannot tell you more... just let me know if you see him, okay?")
         furhat.say("Will you buy something or not? I don't have all day.")
     }
-
-
 }
 
 val ListeningToPreacher = state(parent = TownSquareOptions) {
