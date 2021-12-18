@@ -4,10 +4,40 @@ import furhatos.nlu.EnumEntity
 import furhatos.nlu.Intent
 import furhatos.util.Language
 
+
+// General
+
+class PleaseRepeat: Intent()
+
+// Alley
+
+class GoToAlley: Intent()
+
+// Town square
+
+class GoToTownSquare: Intent()
+
+class TalkToMerchant: Intent()
+
+class TalkToJester: Intent()
+
+class ListenToPreacher: Intent()
+
+class RequestGodExplanation: Intent()
+
+class AskMerchantAboutCult: Intent()
+
+class AskAboutBrother: Intent()
+
+// Tavern
+
+class EnterTavern: Intent()
+
+// Setup
+
 /*
 Game Setup and Name Fetching
  */
-
 class Name : EnumEntity(stemming = false, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         return listOf(
@@ -119,26 +149,3 @@ class LeaveToAlley(val leave : Leave? = null, val alley : Alley? = null): Intent
     }
 }
 
-// General
-
-class PleaseRepeat: Intent()
-
-// Alley
-
-class TalkToMerchant: Intent()
-
-class TalkToJester: Intent()
-
-class ListenToPreacher: Intent()
-
-class GoToAlley: Intent()
-
-class RequestGodExplanation: Intent()
-
-class AskMerchantAboutCult: Intent()
-
-class AskAboutBrother: Intent()
-
-// Tavern
-
-class EnterTavern: Intent()

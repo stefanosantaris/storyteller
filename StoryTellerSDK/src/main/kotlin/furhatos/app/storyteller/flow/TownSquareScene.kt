@@ -4,7 +4,6 @@ import furhatos.app.storyteller.nlu.*
 import furhatos.app.storyteller.utils.JokeManager
 import furhatos.app.storyteller.utils.NoMoreJokesException
 import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
@@ -24,6 +23,33 @@ val TownSquareOptions : State = state(Interaction) {
 
     onResponse<GoToAlley> {
         goto(AlleyArrival)
+    }
+
+}
+
+val TownSquareIdle = state(parent = TownSquareOptions) {
+
+    onEntry {
+        val notVisited = setOf(
+                Interactions.JESTER,
+                Interactions.MERCHANT,
+                Interactions.PREACHER).minus(visited).toList()
+
+        val optionStrings = notVisited.map { it.name.toLowerCase() }
+
+        val optionPresentation = when(notVisited.size) {
+            3 -> "There is a ${optionStrings[0]}, a ${optionStrings[1]} and a ${optionStrings[2]} in the square. "
+            2 -> "There is also a ${optionStrings[0]} and a ${optionStrings[1]} in the square. "
+            1 -> "There is also a ${optionStrings[0]} in the square. "
+            else -> ""
+        }.plus("Behind you is the alley where you were before.")
+
+        furhat.say(optionPresentation)
+        furhat.ask("What do you do?")
+    }
+
+    onReentry {
+        furhat.ask("What do you do?")
     }
 
 }
@@ -69,12 +95,15 @@ val TalkingToJester = state(parent = TownSquareOptions) {
                 furhat.ask("How about another one?")
             } else {
                 furhat.say("That was my last one!")
-                furhat.ask("What do you do?")
+                jokeManager.reset()
+                visited.add(Interactions.JESTER)
+                goto(TownSquareIdle)
             }
 
         } catch (e: NoMoreJokesException) {
             furhat.say("I am afraid that I am all out of jokes!")
-            furhat.ask("What do you do?")
+            visited.add(Interactions.JESTER)
+            goto(TownSquareIdle)
         }
 
     }
@@ -82,7 +111,8 @@ val TalkingToJester = state(parent = TownSquareOptions) {
     onResponse<No> {
         furhat.say("Tis' a pity! Fare thee well!")
         jokeManager.reset()
-        furhat.ask("What do you do?")
+        visited.add(Interactions.JESTER)
+        goto(TownSquareIdle)
     }
 
 }
@@ -106,12 +136,14 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
 
     onResponse<No> {
         furhat.say("Get going then.")
-        furhat.say("What do you do?")
+        visited.add(Interactions.MERCHANT)
+        goto(TownSquareIdle)
     }
 
     onResponse<Yes> {
         furhat.say(dialogStrings["buyFromMerchant"]!!)
-        furhat.ask("What do you do?")
+        visited.add(Interactions.MERCHANT)
+        goto(TownSquareIdle)
     }
 
     onResponse<AskMerchantAboutCult> {
@@ -145,19 +177,20 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
     onResponse<Yes> {
         furhat.say("I knew it! I could see it in your eyes!")
         furhat.say(dialogStrings["receivePassword"]!!)
-        furhat.ask("What do you do?")
+        visited.add(Interactions.PREACHER)
+        goto(TownSquareIdle)
     }
 
     onResponse<No> {
         furhat.say("It matters not. In time you will inevitably reckon the greatness of our lord.")
         furhat.say(dialogStrings["receivePassword"]!!)
-        furhat.ask("What do you do?")
+        visited.plus(Interactions.PREACHER)
+        goto(TownSquareIdle)
     }
 
     onResponse<RequestGodExplanation> {
         furhat.say(dialogStrings["godExplanation"]!!)
         furhat.ask("I ask you again, are you a follower?")
-
     }
 
 }
@@ -167,7 +200,7 @@ private val dialogStrings = mapOf(
         "onArrival" to
                 "You approach the town square and find it to be quite busy with people. " +
                 "Upon entering you notice a preacher standing in a corner speaking to a small crowd " +
-                "and a woman selling potions in a market stand. A jester is trying to perform a show " +
+                "and a woman selling food in a market stand. A jester is trying to perform a show " +
                 "on the far side of the square. However, no one seems to be watching.",
         "jesterOnEntry" to
                 "The jester is juggling with some kegels but seems to keep dropping them. It becomes obvious " +
@@ -193,4 +226,16 @@ private val dialogStrings = mapOf(
 )
 
 
-val jokeManager = JokeManager()
+private val jokeManager = JokeManager()
+
+private enum class Interactions {
+    JESTER, MERCHANT, PREACHER
+}
+
+private val interactionStrings = mapOf(
+        Interactions.JESTER to "jester",
+        Interactions.MERCHANT to "merchant",
+        Interactions.PREACHER to "preacher"
+)
+
+private val visited = mutableSetOf<Interactions>()
