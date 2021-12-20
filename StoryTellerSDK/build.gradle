@@ -46,6 +46,7 @@ repositories {
 
 dependencies {
     compile 'com.furhatrobotics.furhatos:furhat-commons:2.1.0'
+    compile("org.zeromq:jeromq:0.5.2")
 }
 
 jar {
