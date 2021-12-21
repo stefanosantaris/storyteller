@@ -1,41 +1,31 @@
 package furhatos.app.storyteller.flow
 import furhatos.app.storyteller.nlu.*
+import furhatos.app.storyteller.utils.StoryCharacter
+import furhatos.app.storyteller.utils.changeCharacter
 import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.voice.PollyNeuralVoice
-import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.gestures.Gestures
+import furhatos.nlu.NullIntent
 
-val LeaveScene : State = state(Interaction){
-    onButton("Leave and go into the tavern"){
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TavernArrival)
-    }
+val WomanOptions : State = state(Interaction){
 
     onResponse<LeaveToTavern> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
         goto(TavernArrival)
-    }
-
-    onButton("Leave and go to the town square"){
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
     }
 
     onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
         goto(TownSquareArrival)
+    }
+
+    onResponse<IamCop> {
+        goto(DialogWomanAnswer_Cop)
+    }
+
+    onResponse<FollowMan> {
+        goto(DialogWomanAnswer_TattooMan)
+    }
+
+    onResponse<AskAboutTavern> {
+        goto(DialogWomanAnswer_InfoAboutTavern)
     }
 
     onResponse {
@@ -59,37 +49,34 @@ val LeaveScene : State = state(Interaction){
 
 val IntroDialogWoman : State = state(Interaction) {
     onEntry {
-        if (users.current.visitedWoman == false) {
+        if (users.current.visitedWoman != true) {
             furhat.say(utterance {
                 +"You are approaching the woman who is leaning against a wall smoking. "
                 +delay(100)
-                +"As you take a closer look at her, you notice that she seems anxious. You even note that she is slightly shaking. "
+                +"As you take a closer look at her, you notice that she seems anxious, and is even shaking slightly. "
                 +delay(100)
-                +"Once she notices you, she seems freaked out."
+                +"Once she notices you, she seems freaked out. Maybe she knows something about what is going on in town, "
+                +"or about the man you just saw entering."
             })
             goto(DialogWoman_1)
         } else {
             random(
                 {furhat.say("As you approach the woman again, she spots you and rolls her eyes.")},
-                {furhat.say("You again approach the woman who is leaning against the wall. As she notices you, she seems upset.")})
+                {furhat.say("You approach the woman who is leaning against the wall once again. As she notices you, she seems upset.")})
             goto(DialogWoman_1)
         }
     }
 }
 
-val  DialogWoman_1 : State = state(parent = LeaveScene) {
+val  DialogWoman_1 : State = state(parent = WomanOptions) {
     onEntry {
         // change voice and mask
-        furhat.voice = PollyNeuralVoice.Kimberly()
-        furhat.setMask("adult")
-        furhat.setCharacter("Isabel")
+        changeCharacter(furhat, StoryCharacter.ALLEY_WOMAN)
+        delay(300)
 
-        delay(600)
-
-        if (users.current.visitedWoman == false) {
+        if (users.current.visitedWoman != true) {
             users.current.visitedWoman = true
-            furhat.say("What do you want?")
-            furhat.ask("You need to leave!")
+            furhat.ask("Who are you? What do you want?")
         } else {
             random(
                 {furhat.say(utterance {
@@ -109,47 +96,19 @@ val  DialogWoman_1 : State = state(parent = LeaveScene) {
     onReentry {
         random(
             {furhat.ask(utterance{
-                + "Why don't you leave?"
+                + "I don't think I can help you."
                 +blocking {furhat.gesture(Gestures.ExpressFear, async = false)
                 + "What do you want?"}})},
             {furhat.ask("Why are you still here? What do you want?")})
     }
 
-    onResponse<IamCop> {
-        goto(DialogWomanAnswer_Cop)
-    }
-
-    onResponse<FollowMan> {
-        goto(DialogWomanAnswer_TattooMan)
-    }
-
-    onResponse<AskAboutTavern> {
-        goto(DialogWomanAnswer_InfoAboutTavern)
-    }
-
-    onResponse<LeaveToTavern> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TavernArrival)
-    }
-
-    onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
-    }
-
-    onResponse {
+    onResponse(intent = NullIntent) {
         goto(DialogWomanAnswer_1_a)
     }
 }
 
 
-val  DialogWomanAnswer_1_a : State = state(LeaveScene) {
+val  DialogWomanAnswer_1_a : State = state(WomanOptions) {
     onEntry {
         furhat.ask(utterance {
             +"I can not talk to you!"
@@ -164,100 +123,40 @@ val  DialogWomanAnswer_1_a : State = state(LeaveScene) {
         furhat.listen(6000)
     }
 
-    onResponse<IamCop> {
-        goto(DialogWomanAnswer_Cop)
-    }
-
-    onResponse<FollowMan> {
-        goto(DialogWomanAnswer_TattooMan)
-    }
-
-    onResponse<AskAboutTavern> {
-        goto(DialogWomanAnswer_InfoAboutTavern)
-    }
-
-    onResponse<LeaveToTavern> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TavernArrival)
-    }
-
-    onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
-    }
-
-    onResponse {
+    onResponse(intent = NullIntent) {
         goto(DialogWomanAnswer_1_preacherHint)
     }
 }
 
-val  DialogWomanAnswer_1_preacherHint : State = state(LeaveScene) {
+val DialogWomanAnswer_1_preacherHint : State = state(WomanOptions) {
     onEntry {
-        furhat.ask(utterance {
+        furhat.say(utterance {
             +"As I already told you, I cannot tell you anything!"
             +blocking {
                 furhat.gesture(Gestures.GazeAway, async = false)
             }
-            +"Leave right now, or we will both be in danger! If you really want to know more, talk to the preacher at the town square."
+            +"Leave right now, or we will both be in danger! If you really want to know more, talk to the preacher in the town square."
         })
-    }
-
-    onReentry {
-        furhat.listen(6000)
-    }
-
-    onNoResponse {
-        random(
-            {furhat.say("Please go now!")},
-            {furhat.say("You need to leave, now!")},
-            {furhat.say("Why are you still here? You need to leave. Now!")})
-        reentry()
-    }
-
-    onResponse<LeaveToTavern> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TavernArrival)
-    }
-
-    onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
-    }
-
-    onResponse {
-        random(
-            {furhat.say(utterance{
-                + blocking {furhat.gesture(Gestures.Shake, async = false)}
-                + "Please go now!"})},
-            {furhat.say(utterance{
-                + blocking {furhat.gesture(Gestures.Shake, async = false)}
-                + "You need to leave, now!"})},
-            {furhat.say(utterance{
-                + blocking {furhat.gesture(Gestures.Shake, async = false)}
-                + "Why are you still here? You need to leave. Now!"})})
-        reentry()
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        furhat.say("As she seems reluctant to talk to you, you decide to leave her alone.")
+        goto(AlleyIdle)
     }
 }
 
 val DialogWomanAnswer_Cop : State = state(DialogWomanAnswer_1_preacherHint) {
     onEntry {
-        furhat.ask(utterance {
+        furhat.say(utterance {
             + blocking { furhat.gesture(Gestures.ExpressFear, async = false) }
-            +"Look, you need to leave right now. If they find out you are a cop, they will kill you!"
+            +"Look, you need to leave right now. If they find out you are with the watchmen, they will kill you!"
             +"If you really want to know more, talk to the preacher on the town square!"
+            +"I cannot tell you anything more than that."
         })
+
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        delay(300)
+        furhat.say("As she seems reluctant to talk to you, you decide to leave her alone.")
+
+        goto(AlleyIdle)
     }
 
     onReentry {
@@ -265,7 +164,7 @@ val DialogWomanAnswer_Cop : State = state(DialogWomanAnswer_1_preacherHint) {
     }
 }
 
-val  DialogWomanAnswer_TattooMan : State = state(LeaveScene) {
+val  DialogWomanAnswer_TattooMan : State = state(WomanOptions) {
     onEntry {
         furhat.ask(utterance {
             +"I have seen no man!"
@@ -280,36 +179,12 @@ val  DialogWomanAnswer_TattooMan : State = state(LeaveScene) {
         furhat.listen(6000)
     }
 
-    onResponse<IamCop> {
-        goto(DialogWomanAnswer_Cop)
-    }
-
-    onResponse<AskAboutTavern> {
-        goto(DialogWomanAnswer_InfoAboutTavern)
-    }
-
-    onResponse<LeaveToTavern> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TavernArrival)
-    }
-
-    onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
-    }
-
-    onResponse {
+    onResponse(intent = NullIntent) {
         goto(DialogWomanAnswer_1_preacherHint)
     }
 }
 
-val  DialogWomanAnswer_InfoAboutTavern : State = state(LeaveScene) {
+val  DialogWomanAnswer_InfoAboutTavern : State = state(WomanOptions) {
     onEntry {
         furhat.ask(utterance {
             +"Look, this place is not a good place."
@@ -324,31 +199,7 @@ val  DialogWomanAnswer_InfoAboutTavern : State = state(LeaveScene) {
         furhat.listen(6000)
     }
 
-    onResponse<IamCop> {
-        goto(DialogWomanAnswer_Cop)
-    }
-
-    onResponse<FollowMan> {
-        goto(DialogWomanAnswer_TattooMan)
-    }
-
-    onResponse<LeaveToTavern> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TavernArrival)
-    }
-
-    onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
-    }
-
-    onResponse {
+    onResponse(intent = NullIntent) {
         goto(DialogWomanAnswer_1_preacherHint)
     }
 }
