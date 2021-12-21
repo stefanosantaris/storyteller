@@ -2,10 +2,12 @@ package furhatos.app.storyteller.flow.TavernScene
 
 import furhatos.app.storyteller.flow.*
 import furhatos.app.storyteller.nlu.*
+import furhatos.app.storyteller.utils.StoryCharacter
+import furhatos.app.storyteller.utils.changeCharacter
 import furhatos.flow.kotlin.*
 import furhatos.flow.kotlin.voice.PollyNeuralVoice
-import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.gestures.Gestures
+import furhatos.nlu.NullIntent
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
@@ -25,17 +27,14 @@ val IntroWhisperingMen : State = state(Interaction) {
 
             furhat.say("As you reach the table, one of the men says:")
         }
-        goto(DialogWhiserpingMen_1)
+        goto(DialogWhisperingMen_1)
     }
 }
 
-val DialogWhiserpingMen_1 = state(parent = TavernOptions) {
+val DialogWhisperingMen_1 = state(parent = TavernOptions) {
     onEntry {
         // change voice and mask
-        furhat.voice = PollyNeuralVoice.Brian()
-        furhat.setCharacter("Fedora")
-
-        delay(600)
+        changeCharacter(furhat, StoryCharacter.WHISPERING_MAN)
 
         if ( users.current.talkedToWhisperingMen == false) {
             users.current.talkedToWhisperingMen = true
@@ -82,11 +81,11 @@ val DialogWhiserpingMen_1 = state(parent = TavernOptions) {
     }
 
     onResponse<Bribe> {
-        goto(DialogWhiserpingMen_Bribing)
+        goto(DialogWhisperingMen_Bribing)
     }
 
     onResponse<ExpressInsult> {
-        goto(DialogWhiserpingMen_FightScene)
+        goto(DialogWhisperingMen_FightScene)
     }
 
     onResponse<IamCop> {
@@ -166,6 +165,7 @@ val DialogWhiserpingMen_1 = state(parent = TavernOptions) {
                 + "He will guide you to the others."
             })}
         )
+        goto(TavernIdle)
     }
 
     onNoResponse {
@@ -175,42 +175,22 @@ val DialogWhiserpingMen_1 = state(parent = TavernOptions) {
             {furhat.ask("Are you afraid or why don't you speak with us?")})
     }
 
-    onResponse<TalkToBartender> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(IntroBartender)
-    }
-
-    onResponse<LeaveToAlley> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(AlleyArrival)
-    }
-
-    onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
-    }
-
-    onResponse {
+    onResponse(intent = NullIntent) {
         random(
             {furhat.ask("Look, we can not help you. It's better that you leave this tavern.")},
             {furhat.ask("Man, we don't know what you are talking about. You better leave.")},
             {furhat.ask("What are you talking about? It might be better that you leave.")})
+
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        furhat.say("You think it might be best to leave the men alone, at least for now.")
+        goto(TavernIdle)
     }
 }
 
 /*
 Start a fight with the two men
  */
-val DialogWhiserpingMen_FightScene : State = state(parent = TavernOptions) {
+val DialogWhisperingMen_FightScene : State = state(parent = TavernOptions) {
     onEntry {
         random(
             {furhat.ask(utterance {
@@ -236,9 +216,8 @@ val DialogWhiserpingMen_FightScene : State = state(parent = TavernOptions) {
     }
 
     onResponse<Yes> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
+        changeCharacter(furhat,StoryCharacter.NARRATOR)
+        delay(300)
 
         furhat.say("You decide to go out with the two men to start a fight.")
         furhat.say("As you step into the alley, you notice that it already got dark.")
@@ -256,10 +235,10 @@ val DialogWhiserpingMen_FightScene : State = state(parent = TavernOptions) {
 
     onResponse<No> {
         furhat.say("That is smart of you. You better behave yourself next time!")
-        goto(DialogWhiserpingMen_1)
+        goto(DialogWhisperingMen_1)
     }
 
-    onResponse {
+    onResponse(intent = NullIntent) {
         random(
             {furhat.ask("Man speak up! Do you want to fight us?")},
             {furhat.ask("What did you say? Do you dare to fight us or not?")},
@@ -272,7 +251,7 @@ val DialogWhiserpingMen_FightScene : State = state(parent = TavernOptions) {
 /*
 Bribing the two men
  */
-val DialogWhiserpingMen_Bribing : State = state(parent = TavernOptions) {
+val DialogWhisperingMen_Bribing : State = state(parent = TavernOptions) {
     onEntry {
         random(
             {furhat.ask(utterance {
@@ -315,7 +294,7 @@ val DialogWhiserpingMen_Bribing : State = state(parent = TavernOptions) {
         furhat.setCharacter("Jamie")
         delay(600)
 
-        goto(AlleyArrival)
+        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
     }
 
     onResponse<LeaveToTownSquare> {

@@ -8,3 +8,12 @@ fun getAskForActionPhrase(): String {
             "What do you want to do?").shuffled()[0]
 
 }
+
+fun getDidNotUnderstandPhrase(): String {
+
+    return listOf(
+            "Sorry, I didn't understand that.",
+            "Sorry, I didn't get that.",
+            "Sorry, could you repeat that?").shuffled()[0]
+
+}
