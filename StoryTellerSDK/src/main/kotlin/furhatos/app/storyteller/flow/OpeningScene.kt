@@ -10,7 +10,7 @@ val OpeningScene : State = state(Interaction) {
         furhat.say(dialogStrings["onEntry3"]!!)
         furhat.say(dialogStrings["onEntry4"]!!)
         furhat.say(dialogStrings["onEntry5"]!!)
-        goto(AlleyArrival)
+        goto(alleyArrival())
     }
 }
 

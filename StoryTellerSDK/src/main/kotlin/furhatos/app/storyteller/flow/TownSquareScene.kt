@@ -4,6 +4,7 @@ import furhatos.app.storyteller.nlu.*
 import furhatos.app.storyteller.utils.JokeManager
 import furhatos.app.storyteller.utils.NoMoreJokesException
 import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.voice.PollyNeuralVoice
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
@@ -22,7 +23,7 @@ val TownSquareOptions : State = state(Interaction) {
     }
 
     onResponse<LeaveToAlley> {
-        goto(AlleyArrival)
+        goto(alleyArrival(EnteredAlleyFrom.TOWN_SQUARE))
     }
 
 }
@@ -55,7 +56,12 @@ val TownSquareIdle = state(parent = TownSquareOptions) {
 }
 
 val TownSquareArrival = state(parent = TownSquareOptions) {
+
     onEntry {
+        furhat.voice = PollyNeuralVoice.Joey()
+        furhat.character = "Jamie"
+        delay(600)
+
         furhat.say(dialogStrings["onArrival"]!!)
         furhat.ask("What do you do?")
     }
@@ -184,7 +190,7 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
     onResponse<No> {
         furhat.say("It matters not. In time you will inevitably reckon the greatness of our lord.")
         furhat.say(dialogStrings["receivePassword"]!!)
-        visited.plus(Interactions.PREACHER)
+        visited.add(Interactions.PREACHER)
         goto(TownSquareIdle)
     }
 
