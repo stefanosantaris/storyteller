@@ -7,6 +7,7 @@ import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
 import furhatos.app.storyteller.utils.getAskForActionPhrase
 import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.voice.PollyNeuralVoice
 
 val AlleyOptions : State = state(Interaction) {
 
@@ -62,6 +63,7 @@ val AlleyIdle = state(parent = AlleyOptions) {
 
         furhat.say(dialogStrings["alleyIdle"]!!)
         furhat.ask(getAskForActionPhrase())
+
     }
 
     onReentry {
