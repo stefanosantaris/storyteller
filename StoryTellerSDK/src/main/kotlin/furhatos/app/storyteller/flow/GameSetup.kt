@@ -85,6 +85,7 @@ val PresentGame : State = state{
                 }
                 + delay(200)
                 +"Then let us start"
+                + delay(500)
             })
             users.current.wantsPlay = true
             goto(OpeningScene)
