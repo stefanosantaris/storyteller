@@ -172,16 +172,16 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
 
     onEntry {
         furhat.say(dialogStrings["preacherOnEntry"]!!)
-        furhat.ask("Are you a believer? A child of Xoros?")
+        furhat.ask("Are you a believer? A child of Galos?")
     }
 
     onReentry {
-        furhat.ask("Are you a believer? A child of Xoros?")
+        furhat.ask("Are you a believer? A child of Galos?")
     }
 
     onResponse <PleaseRepeat> {
         furhat.say(dialogStrings["preacherOnEntry"]!!)
-        furhat.ask("Are you a believer? A child of Xoros?")
+        furhat.ask("Are you a believer? A child of Galos?")
     }
 
     onResponse<Yes> {
@@ -218,7 +218,7 @@ private val dialogStrings = mapOf(
                 "With him, he has a man and a woman that he claims to have cured from blindness and sickness. " +
                 "He notices you in the crowd and turns to you.",
         "godExplanation" to
-                "Have you not heard? Is your mind still shrouded in darkness? Our lord Xoros has illuminated " +
+                "Have you not heard? Is your mind still shrouded in darkness? Our lord Galos has illuminated " +
                 "the chosen people of Millstone with his power.",
         "receivePassword" to
                 "He moves closer to you and whispers in your ear, too quietly for anyone else to hear. There is a gathering tonight. " +
