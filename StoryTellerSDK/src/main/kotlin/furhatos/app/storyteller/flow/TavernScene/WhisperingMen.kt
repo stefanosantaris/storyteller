@@ -11,6 +11,8 @@ import furhatos.nlu.NullIntent
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
+var entered_onResponse = 0
+
 val IntroWhisperingMen : State = state(Interaction) {
     onEntry {
         if ( users.current.talkedToWhisperingMen == false) {
@@ -33,6 +35,7 @@ val IntroWhisperingMen : State = state(Interaction) {
 
 val DialogWhisperingMen_1 = state(parent = TavernOptions) {
     onEntry {
+        entered_onResponse = 0
         // change voice and mask
         changeCharacter(furhat, StoryCharacter.WHISPERING_MAN)
 
@@ -181,9 +184,13 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
             {furhat.ask("Man, we don't know what you are talking about. You better leave.")},
             {furhat.ask("What are you talking about? It might be better that you leave.")})
 
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        furhat.say("You think it might be best to leave the men alone, at least for now.")
-        goto(TavernIdle)
+        if (entered_onResponse > 2) {
+            changeCharacter(furhat, StoryCharacter.NARRATOR)
+            furhat.say("You think it might be best to leave the men alone, at least for now.")
+            goto(TavernIdle)
+        } else {
+            entered_onResponse++
+        }
     }
 }
 

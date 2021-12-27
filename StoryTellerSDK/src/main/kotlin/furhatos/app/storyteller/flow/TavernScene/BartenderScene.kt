@@ -31,6 +31,7 @@ val IntroBartender : State = state(Interaction) {
 
 val DialogBartender_1 = state(parent = TavernOptions) {
     onEntry {
+        entered_onResponse = 0
         // change voice and mask
         changeCharacter(furhat,StoryCharacter.BARTENDER)
         delay(300)
@@ -163,10 +164,13 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             {furhat.say("Look, I don't know what you are searching for, but you will not find it here. Just leave.")},
             {furhat.say("Look, I can not help you. I think it is best you leave my tavern.")})
 
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        furhat.say("You decide to leave the bartender alone for now.")
-
-        goto(TavernIdle)
+        if (entered_onResponse > 2){
+            changeCharacter(furhat, StoryCharacter.NARRATOR)
+            furhat.say("You decide to leave the bartender alone for now.")
+            goto(TavernIdle)
+        } else {
+            entered_onResponse++
+        }
     }
 }
 
