@@ -1,8 +1,11 @@
 package furhatos.app.storyteller.flow
 
-import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.State
+import furhatos.flow.kotlin.furhat
+import furhatos.flow.kotlin.state
+import furhatos.flow.kotlin.users
 
-val OpeningScene : State = state(Interaction) {
+val OpeningScene: State = state(Interaction) {
     onEntry {
         users.current.hasPlayed = true
         furhat.say(dialogStrings["onEntry1"]!!)

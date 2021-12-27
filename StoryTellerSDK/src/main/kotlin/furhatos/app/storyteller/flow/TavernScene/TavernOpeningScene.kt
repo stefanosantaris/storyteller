@@ -2,12 +2,19 @@ package furhatos.app.storyteller.flow
 
 import furhatos.app.storyteller.flow.TavernScene.IntroBartender
 import furhatos.app.storyteller.flow.TavernScene.IntroWhisperingMen
-import furhatos.app.storyteller.nlu.*
+import furhatos.app.storyteller.nlu.LeaveToAlley
+import furhatos.app.storyteller.nlu.TalkToBartender
+import furhatos.app.storyteller.nlu.TalkToWhisperingMen
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
 import furhatos.app.storyteller.utils.getAskForActionPhrase
 import furhatos.app.storyteller.utils.getDidNotUnderstandPhrase
-import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.furhat
+import furhatos.flow.kotlin.onResponse
+import furhatos.flow.kotlin.onNoResponse
+import furhatos.flow.kotlin.utterance
+import furhatos.flow.kotlin.state
+import furhatos.flow.kotlin.users
 import furhatos.nlu.NullIntent
 
 val TavernOptions = state(parent = Interaction) {
@@ -45,7 +52,6 @@ val TavernArrival = state(parent = TavernOptions) {
     onReentry {
         furhat.ask(getAskForActionPhrase())
     }
-
 
     onResponse(intent = NullIntent) {
         furhat.say(getDidNotUnderstandPhrase())

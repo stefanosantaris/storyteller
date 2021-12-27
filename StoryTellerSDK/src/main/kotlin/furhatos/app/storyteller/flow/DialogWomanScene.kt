@@ -1,12 +1,22 @@
 package furhatos.app.storyteller.flow
-import furhatos.app.storyteller.nlu.*
+import furhatos.app.storyteller.nlu.AskAboutTavern
+import furhatos.app.storyteller.nlu.FollowMan
+import furhatos.app.storyteller.nlu.LeaveToTavern
+import furhatos.app.storyteller.nlu.LeaveToTownSquare
+import furhatos.app.storyteller.nlu.IamCop
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
-import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.State
+import furhatos.flow.kotlin.furhat
+import furhatos.flow.kotlin.onResponse
+import furhatos.flow.kotlin.onNoResponse
+import furhatos.flow.kotlin.utterance
+import furhatos.flow.kotlin.state
+import furhatos.flow.kotlin.users
 import furhatos.gestures.Gestures
 import furhatos.nlu.NullIntent
 
-val WomanOptions : State = state(Interaction){
+val WomanOptions: State = state(Interaction) {
 
     onResponse<LeaveToTavern> {
         goto(TavernArrival)
@@ -30,24 +40,24 @@ val WomanOptions : State = state(Interaction){
 
     onResponse {
         random(
-            {furhat.say("Could you speak up a bit! I can barely understand you.")},
-            {furhat.say("You need to speak a bit clearer. I can not understand what you are saying.")},
-            {furhat.say("What did you say?")}
+            { furhat.say("Could you speak up a bit! I can barely understand you.") },
+            { furhat.say("You need to speak a bit clearer. I can not understand what you are saying.") },
+            { furhat.say("What did you say?") }
         )
         reentry()
     }
 
     onNoResponse {
         random(
-            {furhat.say("Hello? I am talking to you")},
-            {furhat.say("Please answer me")},
-            {furhat.say("Why don't you answer me?")}
+            { furhat.say("Hello? I am talking to you") },
+            { furhat.say("Please answer me") },
+            { furhat.say("Why don't you answer me?") }
         )
         reentry()
     }
 }
 
-val IntroDialogWoman : State = state(Interaction) {
+val IntroDialogWoman: State = state(Interaction) {
     onEntry {
         if (users.current.visitedWoman != true) {
             furhat.say(utterance {
@@ -61,14 +71,14 @@ val IntroDialogWoman : State = state(Interaction) {
             goto(DialogWoman_1)
         } else {
             random(
-                {furhat.say("As you approach the woman again, she spots you and rolls her eyes.")},
-                {furhat.say("You approach the woman who is leaning against the wall once again. As she notices you, she seems upset.")})
+                { furhat.say("As you approach the woman again, she spots you and rolls her eyes.") },
+                { furhat.say("You approach the woman who is leaning against the wall once again. As she notices you, she seems upset.") })
             goto(DialogWoman_1)
         }
     }
 }
 
-val  DialogWoman_1 : State = state(parent = WomanOptions) {
+val DialogWoman_1: State = state(parent = WomanOptions) {
     onEntry {
         // change voice and mask
         changeCharacter(furhat, StoryCharacter.ALLEY_WOMAN)
@@ -79,15 +89,15 @@ val  DialogWoman_1 : State = state(parent = WomanOptions) {
             furhat.ask("Who are you? What do you want?")
         } else {
             random(
-                {furhat.say(utterance {
+                { furhat.say(utterance {
                     + "Not you again!"
-                    + blocking {furhat.gesture(Gestures.ExpressDisgust, async = false)}})},
-                {furhat.say(utterance {
+                    + blocking { furhat.gesture(Gestures.ExpressDisgust, async = false) } }) },
+                { furhat.say(utterance {
                     + "It is you again!"
-                    + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}})},
-                {furhat.say(utterance {
+                    + blocking { furhat.gesture(Gestures.BrowFrown, async = false) } }) },
+                { furhat.say(utterance {
                     + "Seriously, you again?"
-                    + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}})}
+                    + blocking { furhat.gesture(Gestures.BrowFrown, async = false) } }) }
             )
             goto(DialogWomanAnswer_1_preacherHint)
         }
@@ -95,11 +105,11 @@ val  DialogWoman_1 : State = state(parent = WomanOptions) {
 
     onReentry {
         random(
-            {furhat.ask(utterance{
+            { furhat.ask(utterance {
                 + "I don't think I can help you."
-                +blocking {furhat.gesture(Gestures.ExpressFear, async = false)
-                + "What do you want?"}})},
-            {furhat.ask("Why are you still here? What do you want?")})
+                +blocking { furhat.gesture(Gestures.ExpressFear, async = false)
+                + "What do you want?" } }) },
+            { furhat.ask("Why are you still here? What do you want?") })
     }
 
     onResponse(intent = NullIntent) {
@@ -107,8 +117,7 @@ val  DialogWoman_1 : State = state(parent = WomanOptions) {
     }
 }
 
-
-val  DialogWomanAnswer_1_a : State = state(WomanOptions) {
+val DialogWomanAnswer_1_a: State = state(WomanOptions) {
     onEntry {
         furhat.ask(utterance {
             +"I can not talk to you!"
@@ -128,7 +137,7 @@ val  DialogWomanAnswer_1_a : State = state(WomanOptions) {
     }
 }
 
-val DialogWomanAnswer_1_preacherHint : State = state(WomanOptions) {
+val DialogWomanAnswer_1_preacherHint: State = state(WomanOptions) {
     onEntry {
         furhat.say(utterance {
             +"As I already told you, I cannot tell you anything!"
@@ -143,7 +152,7 @@ val DialogWomanAnswer_1_preacherHint : State = state(WomanOptions) {
     }
 }
 
-val DialogWomanAnswer_Cop : State = state(DialogWomanAnswer_1_preacherHint) {
+val DialogWomanAnswer_Cop: State = state(DialogWomanAnswer_1_preacherHint) {
     onEntry {
         furhat.say(utterance {
             + blocking { furhat.gesture(Gestures.ExpressFear, async = false) }
@@ -164,7 +173,7 @@ val DialogWomanAnswer_Cop : State = state(DialogWomanAnswer_1_preacherHint) {
     }
 }
 
-val  DialogWomanAnswer_TattooMan : State = state(WomanOptions) {
+val DialogWomanAnswer_TattooMan: State = state(WomanOptions) {
     onEntry {
         furhat.ask(utterance {
             +"I have seen no man!"
@@ -184,7 +193,7 @@ val  DialogWomanAnswer_TattooMan : State = state(WomanOptions) {
     }
 }
 
-val  DialogWomanAnswer_InfoAboutTavern : State = state(WomanOptions) {
+val DialogWomanAnswer_InfoAboutTavern: State = state(WomanOptions) {
     onEntry {
         furhat.ask(utterance {
             +"Look, this place is not a good place."
@@ -203,5 +212,3 @@ val  DialogWomanAnswer_InfoAboutTavern : State = state(WomanOptions) {
         goto(DialogWomanAnswer_1_preacherHint)
     }
 }
-
-
