@@ -3,6 +3,9 @@ package furhatos.app.storyteller.flow
 import furhatos.app.storyteller.nlu.EnterTavern
 import furhatos.app.storyteller.nlu.LeaveToTownSquare
 import furhatos.app.storyteller.nlu.TalkToWoman
+import furhatos.app.storyteller.utils.StoryCharacter
+import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.app.storyteller.utils.getAskForActionPhrase
 import furhatos.flow.kotlin.*
 import furhatos.flow.kotlin.voice.PollyNeuralVoice
 
@@ -24,8 +27,7 @@ val AlleyOptions : State = state(Interaction) {
 fun alleyArrival(enteredFrom: EnteredAlleyFrom? = null): State = state(AlleyOptions) {
     onEntry {
 
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.character = "Jamie"
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
         delay(600)
 
         when (enteredFrom) {
@@ -45,20 +47,30 @@ fun alleyArrival(enteredFrom: EnteredAlleyFrom? = null): State = state(AlleyOpti
             }
         }
 
-        random(
-            {furhat.ask("What would you like to do?")},
-            {furhat.ask("What do you do?")},
-            {furhat.ask("What do you plan to do?")}
-        )
+        furhat.ask(getAskForActionPhrase())
     }
 
     onReentry {
-        random(
-            {furhat.ask("What would you like to do?")},
-            {furhat.ask("What do you do?")},
-            {furhat.ask("What do you plan to do?")}
-        )
+        furhat.ask(getAskForActionPhrase())
     }
+}
+
+val AlleyIdle = state(parent = AlleyOptions) {
+
+    onEntry {
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        delay(300)
+
+        furhat.say(dialogStrings["alleyIdle"]!!)
+        furhat.ask(getAskForActionPhrase())
+
+    }
+
+    onReentry {
+        furhat.ask(getAskForActionPhrase())
+    }
+
+
 }
 
 private val dialogStrings = mapOf(
@@ -75,7 +87,10 @@ private val dialogStrings = mapOf(
         "onReArrivalFromTownSquare1" to
                 "As you return to the alley, you see that the woman leaning against the tavern's wall is still there.",
         "onReArrivalFromTTownSquare2" to
-                "Next to her is the door to \"The Hidden Goat Tavern\", where you saw the strange man disappear."
+                "Next to her is the door to \"The Hidden Goat Tavern\", where you saw the strange man disappear.",
+        "alleyIdle" to
+                "Next to the woman is the door to \"The Hidden Goat Tavern\", where you saw the strange man disappear. " +
+                "Up ahead you hear noises from a town square."
 )
 
 enum class EnteredAlleyFrom {

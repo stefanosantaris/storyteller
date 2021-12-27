@@ -99,7 +99,7 @@ class TattooMan : EnumEntity(stemming = false, speechRecPhrases = true) {
 class FollowMan(val tattooman : TattooMan? = null): Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("Have you seen the @tattooman", "have you seen the @tattooman", "Have you seen a @tattooman", "have you seen a @tattooman",
-        "I am looking for a @tattooman", "@tattooman", "I am following a @tattooman", "seen a @tattooman")
+        "I am looking for a @tattooman", "@tattooman", "I am following a @tattooman", "seen a @tattooman", "who was that @tattooman")
     }
 }
 
@@ -117,6 +117,18 @@ class WhatIsThisPlace : EnumEntity(stemming = true, speechRecPhrases = true) {
             "can you tell me what this",
             "tell me what is this"
         )
+    }
+}
+
+class AskAboutTown(): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf(
+                "What is going on here?",
+                "What is going on in this town?",
+                "What do you know about this town?",
+                "Cult",
+                "Do you know about the cult?",
+                "What do you know about the cult?")
     }
 }
 
