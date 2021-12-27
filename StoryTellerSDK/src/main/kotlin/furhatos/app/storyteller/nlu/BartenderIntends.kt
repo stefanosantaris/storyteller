@@ -21,7 +21,7 @@ class Fear : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class ExpressFear(val fear : Fear? = null): Intent() {
+class ExpressFear(val fear: Fear? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I am @fear", "@fear don't hurt me", "@fear help me", "@fear", "I'm @fear", "@fear I need help", "help", "I don't want trouble",
         "I do not want trouble")
@@ -103,7 +103,7 @@ class Insult : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class ExpressInsult(val insult : Insult? = null): Intent() {
+class ExpressInsult(val insult: Insult? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("you @insult", "you little @insult", "@insult", "you are a @insult", "you're a @insult", "you call me @insult", "I show you @insult",
         "dirty bar", "dirty tavern", "shady bar", "shady tavern", "@insult bar", "@insult tavern", "you think you are", "do you want to fight")
@@ -128,7 +128,7 @@ class Cult : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class AskForCult(val cult : Cult? = null): Intent() {
+class AskForCult(val cult: Cult? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("do you know something about a @cult", "know about a @cult", "have you heard something about a @cult",
             "heard of a @cult", "know about @cult", "heard about @cult", "about @cult", "about a @cult", "@cult")
@@ -159,7 +159,7 @@ class Password : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class HintAtPassword(val password : Password? = null): Intent() {
+class HintAtPassword(val password: Password? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I can tell you @password", "tell you @password", "say @password", "@password")
     }
@@ -168,7 +168,7 @@ class HintAtPassword(val password : Password? = null): Intent() {
 /*
 Tell password
  */
-class TellPassword: Intent() {
+class TellPassword : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("Dawn is breaking", "dawn is breaking", "Dawn is", "dawn is", "breaking", "Darkness", "darkness", "diners breaking")
     }

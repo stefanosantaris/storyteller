@@ -1,14 +1,25 @@
 package furhatos.app.storyteller.flow
 
-import furhatos.app.storyteller.nlu.*
+import furhatos.app.storyteller.nlu.AskAboutBrother
+import furhatos.app.storyteller.nlu.AskMerchantAboutCult
+import furhatos.app.storyteller.nlu.LeaveToAlley
+import furhatos.app.storyteller.nlu.ListenToPreacher
+import furhatos.app.storyteller.nlu.PleaseRepeat
+import furhatos.app.storyteller.nlu.RequestGodExplanation
+import furhatos.app.storyteller.nlu.TalkToJester
+import furhatos.app.storyteller.nlu.TalkToMerchant
 import furhatos.app.storyteller.utils.JokeManager
 import furhatos.app.storyteller.utils.NoMoreJokesException
-import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.voice.PollyNeuralVoice
+import furhatos.app.storyteller.utils.StoryCharacter
+import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.flow.kotlin.State
+import furhatos.flow.kotlin.furhat
+import furhatos.flow.kotlin.onResponse
+import furhatos.flow.kotlin.state
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
-val TownSquareOptions : State = state(Interaction) {
+val TownSquareOptions: State = state(Interaction) {
 
     onResponse<TalkToJester> {
         goto(TalkingToJester)
@@ -25,7 +36,6 @@ val TownSquareOptions : State = state(Interaction) {
     onResponse<LeaveToAlley> {
         goto(alleyArrival(EnteredAlleyFrom.TOWN_SQUARE))
     }
-
 }
 
 val TownSquareIdle = state(parent = TownSquareOptions) {
@@ -38,7 +48,7 @@ val TownSquareIdle = state(parent = TownSquareOptions) {
 
         val optionStrings = notVisited.map { it.name.toLowerCase() }
 
-        val optionPresentation = when(notVisited.size) {
+        val optionPresentation = when (notVisited.size) {
             3 -> "There is a ${optionStrings[0]}, a ${optionStrings[1]} and a ${optionStrings[2]} in the square. "
             2 -> "There is also a ${optionStrings[0]} and a ${optionStrings[1]} in the square. "
             1 -> "There is also a ${optionStrings[0]} in the square. "
@@ -52,15 +62,13 @@ val TownSquareIdle = state(parent = TownSquareOptions) {
     onReentry {
         furhat.ask("What do you do?")
     }
-
 }
 
 val TownSquareArrival = state(parent = TownSquareOptions) {
 
     onEntry {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.character = "Jamie"
-        delay(600)
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        delay(300)
 
         furhat.say(dialogStrings["onArrival"]!!)
         furhat.ask("What do you do?")
@@ -105,13 +113,11 @@ val TalkingToJester = state(parent = TownSquareOptions) {
                 visited.add(Interactions.JESTER)
                 goto(TownSquareIdle)
             }
-
         } catch (e: NoMoreJokesException) {
             furhat.say("I am afraid that I am all out of jokes!")
             visited.add(Interactions.JESTER)
             goto(TownSquareIdle)
         }
-
     }
 
     onResponse<No> {
@@ -120,9 +126,7 @@ val TalkingToJester = state(parent = TownSquareOptions) {
         visited.add(Interactions.JESTER)
         goto(TownSquareIdle)
     }
-
 }
-
 
 val TalkingToMerchant = state(parent = TownSquareOptions) {
 
@@ -198,9 +202,7 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
         furhat.say(dialogStrings["godExplanation"]!!)
         furhat.ask("I ask you again, are you a follower?")
     }
-
 }
-
 
 private val dialogStrings = mapOf(
         "onArrival" to
@@ -230,7 +232,6 @@ private val dialogStrings = mapOf(
         "buyFromMerchant" to
                 "Here you go, some vension and a wheel of cheddar. Have a good day. You pay the merchant."
 )
-
 
 private val jokeManager = JokeManager()
 

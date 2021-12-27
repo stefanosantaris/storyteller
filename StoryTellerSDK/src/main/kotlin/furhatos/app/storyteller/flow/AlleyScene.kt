@@ -6,10 +6,13 @@ import furhatos.app.storyteller.nlu.TalkToWoman
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
 import furhatos.app.storyteller.utils.getAskForActionPhrase
-import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.voice.PollyNeuralVoice
+import furhatos.flow.kotlin.State
+import furhatos.flow.kotlin.furhat
+import furhatos.flow.kotlin.onResponse
+import furhatos.flow.kotlin.state
+import furhatos.flow.kotlin.users
 
-val AlleyOptions : State = state(Interaction) {
+val AlleyOptions: State = state(Interaction) {
 
     onResponse<LeaveToTownSquare> {
         goto(TownSquareArrival)
@@ -63,7 +66,6 @@ val AlleyIdle = state(parent = AlleyOptions) {
 
         furhat.say(dialogStrings["alleyIdle"]!!)
         furhat.ask(getAskForActionPhrase())
-
     }
 
     onReentry {

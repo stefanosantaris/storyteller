@@ -14,7 +14,7 @@ class Woman : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class TalkToWoman(val woman : Woman? = null): Intent() {
+class TalkToWoman(val woman: Woman? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I talk to the @woman", "I will talk to the @woman", "I like to talk to the @woman", "I go to the @woman",
             "talk to the @woman", "talk with the @woman", "@woman", "go to @woman")
