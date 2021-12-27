@@ -73,7 +73,7 @@ private val dialogStrings = mapOf(
     "onFirstArrival4" to
             "The barmen hands you the torch and says:",
     "onFirstArrivalBartender" to
-            "Remember my friend, dawn is breaking. Xoros has illuminated.",
+            "Remember my friend, dawn is breaking. Galos has illuminated.",
     "onFirstArrival5" to
             "Then, the barmen makes his way up the wooden ladder again. You look into the dark corridor and wonder whether you should enter it.",
     "onReArrival" to
