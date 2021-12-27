@@ -23,7 +23,9 @@ class Corridor : EnumEntity(stemming = false, speechRecPhrases = true) {
             "Channel",
             "channel",
             "Dark",
-            "dark"
+            "dark",
+            "Darkness",
+            "darkness"
         )
     }
 }
@@ -32,7 +34,7 @@ class EnterCorridor(val corridor : Corridor? = null, val wantTo: WantTo? = null)
     override fun getExamples(lang: Language): List<String> {
         return listOf("Enter the @corridor", "enter the @corridor", "Walk into the @corridor", "walk into the @corridor", "walk into @corridor",
         "into the @corridor", "into @corridor", "@corridor", "go into the @corridor", "go into @corridor", "dark @corridor",
-        "go ahead", "enter", "enter it", "yes", "@wantTo @corridor")}
+        "go ahead", "enter", "enter it", "yes", "@wantTo @corridor", "@wantTo the darkness")}
 }
 
 /*
@@ -147,7 +149,9 @@ class Right : EnumEntity(stemming = false, speechRecPhrases = true) {
             "To the one on the right",
             "to the one on the right",
             "The right one",
-            "the right one"
+            "the right one",
+            "Beast",
+            "beast"
         )
     }
 }
