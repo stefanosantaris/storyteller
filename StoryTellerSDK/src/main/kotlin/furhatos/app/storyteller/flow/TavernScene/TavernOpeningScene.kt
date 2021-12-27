@@ -3,65 +3,16 @@ package furhatos.app.storyteller.flow
 import furhatos.app.storyteller.flow.TavernScene.IntroBartender
 import furhatos.app.storyteller.flow.TavernScene.IntroWhisperingMen
 import furhatos.app.storyteller.nlu.*
+import furhatos.app.storyteller.utils.StoryCharacter
+import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.app.storyteller.utils.getAskForActionPhrase
+import furhatos.app.storyteller.utils.getDidNotUnderstandPhrase
 import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.voice.PollyNeuralVoice
+import furhatos.nlu.NullIntent
 
 val TavernOptions = state(parent = Interaction) {
-    onButton("Leave and go to the alley"){
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
-    }
-
     onResponse<LeaveToAlley> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
         goto(alleyArrival(EnteredAlleyFrom.TAVERN))
-    }
-
-    onButton("Leave and go to the town square"){
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
-    }
-
-    onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
-    }
-}
-
-val TavernArrival = state(parent = TavernOptions) {
-    onEntry {
-        if (users.current.visitedTavern == false) {
-            furhat.say(dialogStrings["onFirstArrival1"]!!)
-            furhat.say(dialogStrings["onFirstArrival2"]!!)
-            furhat.say(dialogStrings["onFirstArrival3"]!!)
-            furhat.say(dialogStrings["onFirstArrival4"]!!)
-            users.current.visitedTavern = true
-        } else {
-            furhat.say(dialogStrings["onReArrival"]!!)
-        }
-        random(
-            {furhat.ask("What do you intend to do?")},
-            {furhat.ask("What would you like to do?")},
-            {furhat.ask("What do you do?")})
-    }
-
-    onReentry {
-        random(
-            {furhat.ask("What do you intend to do?")},
-            {furhat.ask("What would you like to do?")},
-            {furhat.ask("What do you do?")})
     }
 
     onResponse<TalkToBartender> {
@@ -71,45 +22,75 @@ val TavernArrival = state(parent = TavernOptions) {
     onResponse<TalkToWhisperingMen> {
         goto(IntroWhisperingMen)
     }
+}
 
-    onResponse<LeaveToAlley> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
+val TavernArrival = state(parent = TavernOptions) {
+    onEntry {
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        delay(300)
 
-        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
+        if (users.current.visitedTavern != true) {
+            furhat.say(dialogStrings["onFirstArrival1"]!!)
+            furhat.say(dialogStrings["onFirstArrival2"]!!)
+            furhat.say(dialogStrings["onFirstArrival3"]!!)
+            furhat.say(dialogStrings["onFirstArrival4"]!!)
+            users.current.visitedTavern = true
+        } else {
+            furhat.say(dialogStrings["onReArrival"]!!)
+        }
+        furhat.ask(getAskForActionPhrase())
     }
 
-    onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
+    onReentry {
+        furhat.ask(getAskForActionPhrase())
     }
 
-    onResponse{
-        random(
-            {furhat.say("Sorry, I didn't understand that.")},
-            {furhat.say("Sorry, I didn't get that.")},
-            {furhat.say("Sorry could you repeat that?")}
-        )
-        random(
-            {furhat.ask("What do you intend to do?")},
-            {furhat.ask("What would you like to do?")},
-            {furhat.ask("What do you do?")})
+
+    onResponse(intent = NullIntent) {
+        furhat.say(getDidNotUnderstandPhrase())
+        furhat.ask(getAskForActionPhrase())
         reentry()
     }
 
     onNoResponse {
-        random(
-            {furhat.ask("What do you intend to do?")},
-            {furhat.ask("What would you like to do?")},
-            {furhat.ask("What do you do?")})
+        furhat.ask(getAskForActionPhrase())
         reentry()
     }
 }
 
+val TavernIdle = state(parent = TavernOptions) {
+
+    onEntry {
+        val whisperingMenString =
+                if (users.current.talkedToWhisperingMen != true)
+                    "There are two shady looking men sitting in a corner, whispering to each other."
+                else
+                    "The two men are still sitting at their table, throwing suspicious glances at you."
+        val bartenderString =
+                if (users.current.talkedToBartender != true)
+                    "Behind the bar, a big dangerous looking man is observing you, while he pretends to clean the counter."
+                else
+                    "The bartender is looking at you with disgust." // TODO: Change if you can win bartenders trust
+        val doorString = "Behind you is the door to the alley."
+
+        furhat.say(utterance {
+            +whisperingMenString
+            +bartenderString
+            +doorString
+        })
+        furhat.ask(getAskForActionPhrase())
+    }
+
+    onReentry {
+        furhat.ask(getAskForActionPhrase())
+    }
+
+    onResponse(intent = NullIntent) {
+        furhat.say(getDidNotUnderstandPhrase())
+        furhat.ask(getAskForActionPhrase())
+        reentry()
+    }
+}
 
 private val dialogStrings = mapOf(
         "onFirstArrival1" to

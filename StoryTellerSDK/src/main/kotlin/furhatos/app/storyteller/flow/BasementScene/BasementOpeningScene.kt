@@ -1,35 +1,33 @@
 package furhatos.app.storyteller.flow.BasementScene
 
 import furhatos.app.storyteller.flow.Interaction
+import furhatos.app.storyteller.flow.TavernArrival
+import furhatos.app.storyteller.flow.visitedBasement
+import furhatos.app.storyteller.nlu.EnterCorridor
+import furhatos.app.storyteller.nlu.GoBack
+import furhatos.app.storyteller.utils.*
 import furhatos.flow.kotlin.*
+import furhatos.nlu.NullIntent
 
-
-
-val BasementOptions = state(parent = Interaction) {
-
-    onResponse<ChooseWest> {
-        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
-    }
-
-    onResponse<ChooseNorth> {
-        goto(IntroBartender)
-    }
-
-    onResponse<ChooseEast> {
-        goto(IntroWhisperingMen)
-    }
-}
-
-val BasementArrival = state(parent = TavernOptions) {
+/*
+The user climbs down a steep wooden ladder into the tavern's basement.
+ */
+val BasementIntro = state(Interaction) {
     onEntry {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
         delay(300)
-        if (users.current.visitedTavern != true) {
+        if (users.current.visitedBasement != true) {
             furhat.say(dialogStrings["onFirstArrival1"]!!)
             furhat.say(dialogStrings["onFirstArrival2"]!!)
             furhat.say(dialogStrings["onFirstArrival3"]!!)
             furhat.say(dialogStrings["onFirstArrival4"]!!)
-            users.current.visitedTavern = true
+            changeCharacter(furhat, StoryCharacter.BARTENDER)
+            delay(300)
+            furhat.say(dialogStrings["onFirstArrivalBartender"]!!)
+            changeCharacter(furhat, StoryCharacter.NARRATOR)
+            delay(300)
+            furhat.say(dialogStrings["onFirstArrival5"]!!)
+            users.current.visitedBasement = true
         } else {
             furhat.say(dialogStrings["onReArrival"]!!)
         }
@@ -40,30 +38,45 @@ val BasementArrival = state(parent = TavernOptions) {
         furhat.ask(getAskForActionPhrase())
     }
 
+    onResponse<EnterCorridor> {
+        goto(BranchOffScene)
+    }
 
-    onResponse(intent = NullIntent) {
-        furhat.say(getDidNotUnderstandPhrase())
-        furhat.ask(getAskForActionPhrase())
-        reentry()
+    onResponse<GoBack> {
+        random(
+            {furhat.say("You decide to climb the ladder back up again.")},
+            {furhat.say("As the fear comes over you, you decide to follow the barmen back up again.")}
+        )
+        goto(TavernArrival)
     }
 
     onNoResponse {
-        furhat.ask(getAskForActionPhrase())
+        furhat.ask(getDidNotHearPhrase())
+        reentry()
+    }
+
+    onResponse(intent = NullIntent) {
+        furhat.say(getDidNotUnderstandPhrase())
         reentry()
     }
 }
 
 private val dialogStrings = mapOf(
     "onFirstArrival1" to
-            "You decide to enter the tavern with the name \"The Hidden Goat Tavern\".",
+            "The barmen directs you to follow him down a steep wooden ladder into the tavern's basement.",
     "onFirstArrival2" to
-            "As you open the heavy wooden tavern's door, the smell of " +
-            "smoke and beer hits you. You briefly scan the room for the man with the weird tattoo on his arm, but you cannot find him.",
+            "As you reach the end of this ladder, you see a room full of beer barrels and other supplies." +
+            "Although the basement is quite dark, you can not find anything suspicious about this place.",
     "onFirstArrival3" to
-            "Instead, you see two shady looking men whispering to each other at one of the tavern's tables.",
+            "Suddenly, the barmen pulls on a torch that is connected to one of the basement's doors, " +
+            "and a shelf full of supplies swings wide open. Behind that shelf, you can see a dark corridor leading into the dark.",
     "onFirstArrival4" to
-            "Behind the bar, a big dangerous looking man is observing you, while he pretends to clean the counter.",
+            "The barmen hands you the torch and says:",
+    "onFirstArrivalBartender" to
+            "Remember my friend, dawn is breaking. Xoros has illuminated.",
+    "onFirstArrival5" to
+            "Then, the barmen makes his way up the wooden ladder again. You look into the dark corridor and wonder whether you should enter it.",
     "onReArrival" to
-            "You enter \"The Hidden Goat Tavern\". Back in the bar, the bartender is still looking at you grimly, while the two men in the corner are still " +
-            "whispering with each other."
+            "You climb down the steep ladder into the basement again and pull the torch that is connected to the basement's wall." +
+            "As the shelf swings wide open, you decide to walk straight into the dark corridor."
 )
