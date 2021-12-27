@@ -60,7 +60,7 @@ class Bartender : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class TalkToBartender(val bartender : Bartender? = null, val wantTo : WantTo? = null): Intent() {
+class TalkToBartender(val bartender: Bartender? = null, val wantTo: WantTo? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@wantTo @bartender", "@wantTo the @bartender", "@wantTo a @bartender", "@bartender")
     }
@@ -96,7 +96,7 @@ class TalkingMen : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class TalkToWhisperingMen(val talkingMen : TalkingMen? = null, val wantTo : WantTo? = null): Intent() {
+class TalkToWhisperingMen(val talkingMen: TalkingMen? = null, val wantTo: WantTo? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@wantTo @talkingMen", "@wantTo the @talkingMen", "@wantTo a @talkingMen", "@talkingMen", "@wantTo two @talkingMen", "two @talkingMen")
     }

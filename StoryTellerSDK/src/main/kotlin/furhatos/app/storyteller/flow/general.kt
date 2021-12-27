@@ -3,12 +3,18 @@ import furhatos.app.storyteller.nlu.TellNameBriefly
 import furhatos.app.storyteller.robotName
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
-import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.State
+import furhatos.flow.kotlin.furhat
+import furhatos.flow.kotlin.onResponse
+import furhatos.flow.kotlin.state
+import furhatos.flow.kotlin.users
 import furhatos.flow.kotlin.voice.PollyNeuralVoice
+import furhatos.flow.kotlin.onUserEnter
+import furhatos.flow.kotlin.onUserLeave
+import furhatos.flow.kotlin.utterance
 import furhatos.gestures.Gestures
 import furhatos.nlu.common.TellName
 import furhatos.records.User
-import furhatos.util.*
 
 val Idle: State = state {
 
@@ -93,9 +99,9 @@ val Interaction: State = state {
         // attend new entering user
         furhat.attend(it)
         random(
-            {furhat.say("Hello there! Lovely that you joined our small game.")},
-            {furhat.say("Hello! Nice to have more people joining today!")},
-            {furhat.say("Welcome! What a pleasure to see you.")}
+            { furhat.say("Hello there! Lovely that you joined our small game.") },
+            { furhat.say("Hello! Nice to have more people joining today!") },
+            { furhat.say("Welcome! What a pleasure to see you.") }
         )
         furhat.glance(mainUser)
         furhat.attend(mainUser)
@@ -104,8 +110,7 @@ val Interaction: State = state {
     }
 }
 
-
-val CatchName: State = state(Interaction){
+val CatchName: State = state(Interaction) {
     /*
     Tell name in brief fashion
      */
@@ -201,7 +206,7 @@ val CatchName: State = state(Interaction){
 /*
 Process name of user
  */
-fun process_name(userName : String) : State = state {
+fun process_name(userName: String): State = state {
     onEntry {
         if (userName == robotName) {
             random(

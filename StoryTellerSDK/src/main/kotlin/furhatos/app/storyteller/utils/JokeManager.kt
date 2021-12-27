@@ -54,12 +54,8 @@ class JokeManager {
     fun reset() {
         jokeCounter = 0
     }
-
-
 }
 
 private data class Joke(val setup: String, val punchline: String)
 
 class NoMoreJokesException : Exception()
-
-
