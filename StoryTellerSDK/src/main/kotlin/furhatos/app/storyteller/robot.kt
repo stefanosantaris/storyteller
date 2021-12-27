@@ -1,3 +1,3 @@
 package furhatos.app.storyteller
 
-val robotName : String = "James"
+val robotName: String = "James"

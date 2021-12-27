@@ -4,34 +4,33 @@ import furhatos.nlu.EnumEntity
 import furhatos.nlu.Intent
 import furhatos.util.Language
 
-
 // General
 
-class PleaseRepeat: Intent()
+class PleaseRepeat : Intent()
 
 // Alley
 
-class GoToAlley: Intent()
+class GoToAlley : Intent()
 
 // Town square
 
-class GoToTownSquare: Intent()
+class GoToTownSquare : Intent()
 
-class TalkToMerchant: Intent()
+class TalkToMerchant : Intent()
 
-class TalkToJester: Intent()
+class TalkToJester : Intent()
 
-class ListenToPreacher: Intent()
+class ListenToPreacher : Intent()
 
-class RequestGodExplanation: Intent()
+class RequestGodExplanation : Intent()
 
-class AskMerchantAboutCult: Intent()
+class AskMerchantAboutCult : Intent()
 
-class AskAboutBrother: Intent()
+class AskAboutBrother : Intent()
 
 // Tavern
 
-class EnterTavern: Intent()
+class EnterTavern : Intent()
 
 // Setup
 
@@ -42,12 +41,12 @@ class Name : EnumEntity(stemming = false, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         return listOf(
             "Stefanos", "Wille", "Joao", "Victor", "Philipp", "Katie", "Manuel", "Alex", "Sofia", "Olivia", "Liam", "Emma", "Noah", "Amelia",
-            "Oliver", "Sophia", "Lucas", "Charlotte", "Levi", "James", "Dennis","Elsa", "Marcel-Robert", "Iolanda", "Thomas", "Manuel", "Arzu", "Emil", "Laura",
+            "Oliver", "Sophia", "Lucas", "Charlotte", "Levi", "James", "Dennis", "Elsa", "Marcel-Robert", "Iolanda", "Thomas", "Manuel", "Arzu", "Emil", "Laura",
             "Edlidir", "Ola", "João", "Philip", "Kristin", "Isak", "Divya", "Alexander", "Mikael", "Miklovana", "Katie", "Elmira", "Ilaria")
     }
 }
 
-class TellNameBriefly(val name : Name? = null): Intent() {
+class TellNameBriefly(val name: Name? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf(
             "@name",
@@ -98,7 +97,7 @@ class Tavern : EnumEntity(stemming = true, speechRecPhrases = true) {
     }
 }
 
-class LeaveToTavern(val leave : Leave? = null, val tavern : Tavern? = null): Intent() {
+class LeaveToTavern(val leave: Leave? = null, val tavern: Tavern? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@leave @tavern", "@tavern")
     }
@@ -120,7 +119,7 @@ class TownSquare : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class LeaveToTownSquare(val leave : Leave? = null, val townsquare : TownSquare? = null): Intent() {
+class LeaveToTownSquare(val leave: Leave? = null, val townsquare: TownSquare? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@leave @townsquare", "@townsquare")
     }
@@ -143,9 +142,8 @@ class Alley : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class LeaveToAlley(val leave : Leave? = null, val alley : Alley? = null): Intent() {
+class LeaveToAlley(val leave: Leave? = null, val alley: Alley? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@leave @alley", "@alley")
     }
 }
-

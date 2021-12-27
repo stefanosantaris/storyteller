@@ -1,16 +1,33 @@
 package furhatos.app.storyteller.flow.TavernScene
 
-import furhatos.app.storyteller.flow.*
-import furhatos.app.storyteller.nlu.*
+import furhatos.app.storyteller.flow.Idle
+import furhatos.app.storyteller.flow.Interaction
+import furhatos.app.storyteller.flow.TavernIdle
+import furhatos.app.storyteller.flow.TavernOptions
+import furhatos.app.storyteller.flow.talkedToBartender
+import furhatos.app.storyteller.nlu.AskForCult
+import furhatos.app.storyteller.nlu.ExpressFear
+import furhatos.app.storyteller.nlu.ExpressInsult
+import furhatos.app.storyteller.nlu.FollowMan
+import furhatos.app.storyteller.nlu.HintAtPassword
+import furhatos.app.storyteller.nlu.IamCop
+import furhatos.app.storyteller.nlu.TellPassword
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
-import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.Furhat
+import furhatos.flow.kotlin.State
+import furhatos.flow.kotlin.furhat
+import furhatos.flow.kotlin.onNoResponse
+import furhatos.flow.kotlin.onResponse
+import furhatos.flow.kotlin.state
+import furhatos.flow.kotlin.users
+import furhatos.flow.kotlin.utterance
 import furhatos.gestures.Gestures
 import furhatos.nlu.NullIntent
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
-val IntroBartender : State = state(Interaction) {
+val IntroBartender: State = state(Interaction) {
     onEntry {
         if (users.current.talkedToBartender == false) {
             furhat.say(utterance {
@@ -21,9 +38,9 @@ val IntroBartender : State = state(Interaction) {
             })
         } else {
             random(
-                {furhat.say("As you walk to the bartender again, he looks up at you and frowns.")},
-                {furhat.say("While you approach the bartender again, he looks at you annoyed.")},
-                {furhat.say("You decide to go to the bartender again. As he sees you, he shakes his head.")})
+                { furhat.say("As you walk to the bartender again, he looks up at you and frowns.") },
+                { furhat.say("While you approach the bartender again, he looks at you annoyed.") },
+                { furhat.say("You decide to go to the bartender again. As he sees you, he shakes his head.") })
         }
         goto(DialogBartender_1)
     }
@@ -31,21 +48,20 @@ val IntroBartender : State = state(Interaction) {
 
 val DialogBartender_1 = state(parent = TavernOptions) {
     onEntry {
-        entered_onResponse = 0
         // change voice and mask
-        changeCharacter(furhat,StoryCharacter.BARTENDER)
+        changeCharacter(furhat, StoryCharacter.BARTENDER)
         delay(300)
 
         if (users.current.talkedToBartender != true) {
             users.current.talkedToBartender = true
             furhat.say(utterance {
-                + blocking {furhat.gesture(Gestures.ExpressDisgust, async = false)}
+                + blocking { furhat.gesture(Gestures.ExpressDisgust, async = false) }
                 + "What do you want little rascal?"
             })
             furhat.ask("You don’t look like you should be in a bar like this. Why are you here?")
         } else {
             furhat.say(utterance {
-                + blocking {furhat.gesture(Gestures.Shake, async = false)}
+                + blocking { furhat.gesture(Gestures.Shake, async = false) }
                 + "You again?"
             })
             furhat.ask("Didn't I tell you to leave, little rascal? What do you want?")
@@ -54,25 +70,25 @@ val DialogBartender_1 = state(parent = TavernOptions) {
 
     onReentry {
         random(
-            {furhat.ask("So what do you want rascal?")},
-            {furhat.ask("So what do you want?")},
-            {furhat.ask("So tell me, rascal, what do you want from me?")})
+            { furhat.ask("So what do you want rascal?") },
+            { furhat.ask("So what do you want?") },
+            { furhat.ask("So tell me, rascal, what do you want from me?") })
     }
 
     onResponse<ExpressFear> {
         random(
-            {furhat.ask(utterance {
+            { furhat.ask(utterance {
                 + "Haha"
-                + blocking {furhat.gesture(Gestures.Shake, async = false)}
-                + "You seem way to afraid to be in a place like this. I think it is best if you leave."})},
-            {furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.Shake, async = false) }
+                + "You seem way to afraid to be in a place like this. I think it is best if you leave." }) },
+            { furhat.ask(utterance {
                 + "Look at you!"
-                + blocking {furhat.gesture(Gestures.Oh, async = false)}
-                + "Are you afraid? I think it is best if you leave this place. You should not be here"})},
-            {furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.Oh, async = false) }
+                + "Are you afraid? I think it is best if you leave this place. You should not be here" }) },
+            { furhat.ask(utterance {
                 + "What a fraidy-cat you are!"
-                + blocking {furhat.gesture(Gestures.Shake, async = false)}
-                + "I think you should leave this place and go home to your mummy."})}
+                + blocking { furhat.gesture(Gestures.Shake, async = false) }
+                + "I think you should leave this place and go home to your mummy." }) }
         )
     }
 
@@ -82,70 +98,70 @@ val DialogBartender_1 = state(parent = TavernOptions) {
 
     onResponse<IamCop> {
         random(
-            {furhat.ask(utterance {
+            { furhat.ask(utterance {
                 + "So the sheriff sent you?"
-                + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}
-                + "Well first of all, I don't like cops to sniff around my tavern. And secondly, I have done nothing!"})},
-            {furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.BrowFrown, async = false) }
+                + "Well first of all, I don't like cops to sniff around my tavern. And secondly, I have done nothing!" }) },
+            { furhat.ask(utterance {
                 + "You are a cop?"
-                + blocking {furhat.gesture(Gestures.ExpressAnger, async = false)}
-                + "I have done nothing criminal! What do you want here?"})},
-            {furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.ExpressAnger, async = false) }
+                + "I have done nothing criminal! What do you want here?" }) },
+            { furhat.ask(utterance {
                 + "Wait, you are a watchman?"
-                + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}
-                + "What do you want in my tavern? Why are you sniffing around here?"})}
+                + blocking { furhat.gesture(Gestures.BrowFrown, async = false) }
+                + "What do you want in my tavern? Why are you sniffing around here?" }) }
         )
     }
 
     onResponse<FollowMan> {
         random(
-            {furhat.ask(utterance {
+            { furhat.ask(utterance {
                 + "Man, I don't know what you have been drinking."
-                + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}
-                + "But I haven't seen anyone coming in here for several hours."})},
-            {furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.BrowFrown, async = false) }
+                + "But I haven't seen anyone coming in here for several hours." }) },
+            { furhat.ask(utterance {
                 + "Haha"
-                + blocking {furhat.gesture(Gestures.Wink, async = false)}
-                + "You think I'm stupid, is that it? No one has come in here for hours!"})},
-            {furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.Wink, async = false) }
+                + "You think I'm stupid, is that it? No one has come in here for hours!" }) },
+            { furhat.ask(utterance {
                 + "What have you been smoking? "
-                + blocking {furhat.gesture(Gestures.Shake, async = false)}
-                + "Nobody has entered my tavern for hours."})}
+                + blocking { furhat.gesture(Gestures.Shake, async = false) }
+                + "Nobody has entered my tavern for hours." }) }
         )
     }
 
     onResponse<AskForCult> {
         random(
-            {furhat.ask(utterance {
-                + blocking {furhat.gesture(Gestures.ExpressDisgust, async = false)}
+            { furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.ExpressDisgust, async = false) }
                 + "What are you talking about?"
-                + "I don't know anything about a cult!"})},
-            {furhat.ask(utterance {
-                + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}
-                + "What do you mean? I have never heard anything about a cult!"})},
-            {furhat.ask(utterance {
+                + "I don't know anything about a cult!" }) },
+            { furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.BrowFrown, async = false) }
+                + "What do you mean? I have never heard anything about a cult!" }) },
+            { furhat.ask(utterance {
                 + "What are you talking about?"
-                + blocking {furhat.gesture(Gestures.Shake, async = false)}
-                + "A cult? That is insane. I have never heard anything about a cult"})}
+                + blocking { furhat.gesture(Gestures.Shake, async = false) }
+                + "A cult? That is insane. I have never heard anything about a cult" }) }
         )
     }
 
     onResponse<HintAtPassword> {
         random(
-            {furhat.ask(utterance {
+            { furhat.ask(utterance {
                 + "Hmm"
-                + blocking {furhat.gesture(Gestures.GazeAway, async = false)}
-                + "I might be able to tell you more if you tell me the password."})},
-            {furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.GazeAway, async = false) }
+                + "I might be able to tell you more if you tell me the password." }) },
+            { furhat.ask(utterance {
                 + "You might be at the right place."
-                + blocking {furhat.gesture(Gestures.Surprise, async = false)}
-                + "Tell me the password and I can tell you more."})}
+                + blocking { furhat.gesture(Gestures.Surprise, async = false) }
+                + "Tell me the password and I can tell you more." }) }
         )
     }
 
     onResponse<TellPassword> {
         furhat.say(utterance {
-            + blocking {furhat.gesture(Gestures.Oh, async = false)}
+            + blocking { furhat.gesture(Gestures.Oh, async = false) }
             + "Oh! Sorry Sir, I did not know that you are a member of the circle."
             + "Please follow me, I will lead you to the others"
         })
@@ -153,63 +169,59 @@ val DialogBartender_1 = state(parent = TavernOptions) {
 
     onNoResponse {
         random(
-            {furhat.ask("Why don't you answer me? Are you too afraid to speak?")},
-            {furhat.ask("Are you just going to stand there?")},
-            {furhat.ask("Are you afraid or why don't you say something?")})
+            { furhat.ask("Why don't you answer me? Are you too afraid to speak?") },
+            { furhat.ask("Are you just going to stand there?") },
+            { furhat.ask("Are you afraid or why don't you say something?") })
     }
 
     onResponse(intent = NullIntent) {
-        random(
-            {furhat.say("I can not help you. It's better you leave my tavern.")},
-            {furhat.say("Look, I don't know what you are searching for, but you will not find it here. Just leave.")},
-            {furhat.say("Look, I can not help you. I think it is best you leave my tavern.")})
-
-        if (entered_onResponse > 2){
-            changeCharacter(furhat, StoryCharacter.NARRATOR)
-            furhat.say("You decide to leave the bartender alone for now.")
+        if (timeToLeave(furhat)) {
             goto(TavernIdle)
-        } else {
-            entered_onResponse++
         }
+
+        random(
+            { furhat.ask("I can not help you. It's better you leave my tavern.") },
+            { furhat.ask("Look, I don't know what you are searching for, but you will not find it here. Just leave.") },
+            { furhat.ask("Look, I can not help you. I think it is best you leave my tavern.") })
     }
 }
 
-val DialogBartender_FightScene : State = state(parent = TavernOptions) {
+val DialogBartender_FightScene: State = state(parent = TavernOptions) {
     onEntry {
         random(
-            {furhat.ask(utterance {
+            { furhat.ask(utterance {
                 + "You dare to insult me?"
-                + blocking {furhat.gesture(Gestures.ExpressAnger, async = false)}
-                + "Do you want a fight?"})},
-            {furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.ExpressAnger, async = false) }
+                + "Do you want a fight?" }) },
+            { furhat.ask(utterance {
                 + "Are you seriously insulting me?"
-                + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}
-                + "We can go out fighting if you want."})},
-            {furhat.ask(utterance {
+                + blocking { furhat.gesture(Gestures.BrowFrown, async = false) }
+                + "We can go out fighting if you want." }) },
+            { furhat.ask(utterance {
                 + "You dare insult me?"
-                + blocking {furhat.gesture(Gestures.ExpressAnger, async = false)}
-                + "If you want, we can go outside and fight this out."})}
+                + blocking { furhat.gesture(Gestures.ExpressAnger, async = false) }
+                + "If you want, we can go outside and fight this out." }) }
         )
     }
     onNoResponse {
         random(
-            {furhat.ask("Answer! Do you want to fight me?")},
-            {furhat.ask("Answer me! Do you dare to fight me or not?")},
-            {furhat.ask("Are you too afraid to answer? Do you wanna fight me or not?")}
+            { furhat.ask("Answer! Do you want to fight me?") },
+            { furhat.ask("Answer me! Do you dare to fight me or not?") },
+            { furhat.ask("Are you too afraid to answer? Do you wanna fight me or not?") }
         )
     }
 
     onResponse<Yes> {
-        changeCharacter(furhat,StoryCharacter.NARRATOR)
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
         delay(300)
         furhat.say("You decide to go out with the bartender to start a fight.")
         furhat.say("As you step into the alley, the woman who was leaning against the wall shouts:")
 
-        changeCharacter(furhat,StoryCharacter.ALLEY_WOMAN)
+        changeCharacter(furhat, StoryCharacter.ALLEY_WOMAN)
         delay(300)
         furhat.say("\"Careful, behind you!\"")
 
-        changeCharacter(furhat,StoryCharacter.NARRATOR)
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
         delay(300)
         furhat.say("You immediately turn around, but the bartender is too fast. The last thing you see is a club aiming for your head.")
         furhat.say("Then, it gets dark...")
@@ -227,10 +239,28 @@ val DialogBartender_FightScene : State = state(parent = TavernOptions) {
 
     onResponse {
         random(
-            {furhat.ask("Man speak up! Do you want to fight me?")},
-            {furhat.ask("What did you say? Do you dare to fight me or not?")},
-            {furhat.ask("Speak up! Do you wanna fight me or not?")}
+            { furhat.ask("Man speak up! Do you want to fight me?") },
+            { furhat.ask("What did you say? Do you dare to fight me or not?") },
+            { furhat.ask("Speak up! Do you wanna fight me or not?") }
         )
     }
 }
 
+private var responseCounter = 0
+
+private fun timeToLeave(furhat: Furhat): Boolean {
+    return if (responseCounter == 3) {
+        responseCounter = 0
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        furhat.say(
+            listOf(
+                    "You decide to leave the bartender alone for now.",
+                    "You think it might be best to leave the bartender alone, at least for now."
+            ).shuffled()[0]
+        )
+        true
+    } else {
+        responseCounter++
+        false
+    }
+}
