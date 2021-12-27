@@ -1,12 +1,9 @@
 package furhatos.app.storyteller.flow.TavernScene
 
-import furhatos.app.storyteller.flow.EnteredAlleyFrom
 import furhatos.app.storyteller.flow.Idle
 import furhatos.app.storyteller.flow.Interaction
 import furhatos.app.storyteller.flow.TavernIdle
 import furhatos.app.storyteller.flow.TavernOptions
-import furhatos.app.storyteller.flow.TownSquareArrival
-import furhatos.app.storyteller.flow.alleyArrival
 import furhatos.app.storyteller.flow.talkedToWhisperingMen
 import furhatos.app.storyteller.nlu.AskForCult
 import furhatos.app.storyteller.nlu.Bribe
@@ -15,12 +12,10 @@ import furhatos.app.storyteller.nlu.ExpressInsult
 import furhatos.app.storyteller.nlu.FollowMan
 import furhatos.app.storyteller.nlu.HintAtPassword
 import furhatos.app.storyteller.nlu.IamCop
-import furhatos.app.storyteller.nlu.LeaveToAlley
-import furhatos.app.storyteller.nlu.LeaveToTownSquare
-import furhatos.app.storyteller.nlu.TalkToBartender
 import furhatos.app.storyteller.nlu.TellPassword
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.flow.kotlin.Furhat
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
 import furhatos.flow.kotlin.onNoResponse
@@ -28,7 +23,6 @@ import furhatos.flow.kotlin.onResponse
 import furhatos.flow.kotlin.state
 import furhatos.flow.kotlin.users
 import furhatos.flow.kotlin.utterance
-import furhatos.flow.kotlin.voice.PollyNeuralVoice
 import furhatos.gestures.Gestures
 import furhatos.nlu.NullIntent
 import furhatos.nlu.common.No
@@ -36,7 +30,8 @@ import furhatos.nlu.common.Yes
 
 val IntroWhisperingMen: State = state(Interaction) {
     onEntry {
-        if (users.current.talkedToWhisperingMen == false) {
+        responseCounter = 0
+        if (users.current.talkedToWhisperingMen != true) {
             furhat.say(utterance {
                 +"While you approach the two people sitting in their booth, they immediately stop talking and look suspiciously at you."
                 +delay(100)
@@ -59,7 +54,7 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
         // change voice and mask
         changeCharacter(furhat, StoryCharacter.WHISPERING_MAN)
 
-        if (users.current.talkedToWhisperingMen == false) {
+        if (users.current.talkedToWhisperingMen != true) {
             users.current.talkedToWhisperingMen = true
             furhat.say(utterance {
                 +"What do you want?"
@@ -196,6 +191,19 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
             { furhat.ask("Why don't you say anything? Are you too afraid to speak?") },
             { furhat.ask("Answer us!") },
             { furhat.ask("Are you afraid or why don't you speak with us?") })
+
+        if (responseCounter == 3) {
+            responseCounter = 0
+            changeCharacter(furhat, StoryCharacter.NARRATOR)
+            random(
+                    furhat.say("You decide to leave the men alone for now."),
+                    furhat.say("You think it might be best to leave the men alone, at least for now.")
+            )
+
+            goto(TavernIdle)
+        } else {
+            responseCounter++
+        }
     }
 
     onResponse(intent = NullIntent) {
@@ -204,9 +212,18 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
             { furhat.ask("Man, we don't know what you are talking about. You better leave.") },
             { furhat.ask("What are you talking about? It might be better that you leave.") })
 
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        furhat.say("You think it might be best to leave the men alone, at least for now.")
-        goto(TavernIdle)
+        if (responseCounter == 3) {
+            responseCounter = 0
+            changeCharacter(furhat, StoryCharacter.NARRATOR)
+            random(
+                furhat.say("You decide to leave the men alone for now."),
+                furhat.say("You think it might be best to leave the men alone, at least for now.")
+            )
+
+            goto(TavernIdle)
+        } else {
+            responseCounter++
+        }
     }
 }
 
@@ -301,37 +318,40 @@ val DialogWhisperingMen_Bribing: State = state(parent = TavernOptions) {
             { furhat.ask("Why are you still here? Go now. And remember, do not tell anyone about our little talk.") },
             { furhat.ask("Man, you need to go now. And remember, don't tell anyone about this!") }
         )
+
+        if (timeToLeave(furhat)) {
+            goto(TavernIdle)
+        }
     }
 
-    onResponse<TalkToBartender> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(IntroBartender)
-    }
-
-    onResponse<LeaveToAlley> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
-    }
-
-    onResponse<LeaveToTownSquare> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(TownSquareArrival)
-    }
-
-    onResponse {
+    onResponse(intent = NullIntent) {
         random(
-            { furhat.ask("Man, I can not help you more than that. Go to the bartender and you will find what you are searching for.") },
+            { furhat.ask("Man, I cannot help you more than that. Go to the bartender and you will find what you are searching for.") },
             { furhat.ask("Listen, you should go now. As I told you, talk to the bartender and he will guide you the way.") },
             { furhat.ask("Listen, you need to leave now. Go to the bartender and he will show you the way.") }
         )
+
+        if (timeToLeave(furhat)) {
+            goto(TavernIdle)
+        }
+    }
+}
+
+private var responseCounter = 0
+
+private fun timeToLeave(furhat: Furhat): Boolean {
+    return if (responseCounter == 3) {
+        responseCounter = 0
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        furhat.say(
+            listOf(
+                "You decide to leave the men alone for now.",
+                "You think it might be best to leave the men alone, at least for now."
+            ).shuffled()[0]
+        )
+        true
+    } else {
+        responseCounter++
+        false
     }
 }

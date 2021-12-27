@@ -10,11 +10,12 @@ import furhatos.app.storyteller.nlu.TalkToJester
 import furhatos.app.storyteller.nlu.TalkToMerchant
 import furhatos.app.storyteller.utils.JokeManager
 import furhatos.app.storyteller.utils.NoMoreJokesException
+import furhatos.app.storyteller.utils.StoryCharacter
+import furhatos.app.storyteller.utils.changeCharacter
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
 import furhatos.flow.kotlin.onResponse
 import furhatos.flow.kotlin.state
-import furhatos.flow.kotlin.voice.PollyNeuralVoice
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
@@ -66,9 +67,8 @@ val TownSquareIdle = state(parent = TownSquareOptions) {
 val TownSquareArrival = state(parent = TownSquareOptions) {
 
     onEntry {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.character = "Jamie"
-        delay(600)
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        delay(300)
 
         furhat.say(dialogStrings["onArrival"]!!)
         furhat.ask("What do you do?")

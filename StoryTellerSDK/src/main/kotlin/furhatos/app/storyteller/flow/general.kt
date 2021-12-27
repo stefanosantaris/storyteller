@@ -8,7 +8,6 @@ import furhatos.flow.kotlin.furhat
 import furhatos.flow.kotlin.onResponse
 import furhatos.flow.kotlin.state
 import furhatos.flow.kotlin.users
-import furhatos.flow.kotlin.voice.PollyNeuralVoice
 import furhatos.flow.kotlin.onUserEnter
 import furhatos.flow.kotlin.onUserLeave
 import furhatos.flow.kotlin.utterance
@@ -64,9 +63,7 @@ val Idle: State = state {
         furhat.attend(it)
 
         // set voice and face
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.mask = "adult"
-        furhat.character = "Jamie"
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
         initializeUserGameState(users.current)
         goto(SelfPresent)
     }

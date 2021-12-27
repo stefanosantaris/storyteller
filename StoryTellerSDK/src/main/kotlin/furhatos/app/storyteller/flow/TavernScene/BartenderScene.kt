@@ -14,6 +14,7 @@ import furhatos.app.storyteller.nlu.IamCop
 import furhatos.app.storyteller.nlu.TellPassword
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.flow.kotlin.Furhat
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
 import furhatos.flow.kotlin.onNoResponse
@@ -171,6 +172,10 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             { furhat.ask("Why don't you answer me? Are you too afraid to speak?") },
             { furhat.ask("Are you just going to stand there?") },
             { furhat.ask("Are you afraid or why don't you say something?") })
+
+        if (timeToLeave(furhat)) {
+            goto(TavernIdle)
+        }
     }
 
     onResponse(intent = NullIntent) {
@@ -179,10 +184,9 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             { furhat.say("Look, I don't know what you are searching for, but you will not find it here. Just leave.") },
             { furhat.say("Look, I can not help you. I think it is best you leave my tavern.") })
 
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        furhat.say("You decide to leave the bartender alone for now.")
-
-        goto(TavernIdle)
+        if (timeToLeave(furhat)) {
+            goto(TavernIdle)
+        }
     }
 }
 
@@ -243,5 +247,24 @@ val DialogBartender_FightScene: State = state(parent = TavernOptions) {
             { furhat.ask("What did you say? Do you dare to fight me or not?") },
             { furhat.ask("Speak up! Do you wanna fight me or not?") }
         )
+    }
+}
+
+private var responseCounter = 0
+
+private fun timeToLeave(furhat: Furhat): Boolean {
+    return if (responseCounter == 3) {
+        responseCounter = 0
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        furhat.say(
+            listOf(
+                    "You decide to leave the bartender alone for now.",
+                    "You think it might be best to leave the bartender alone, at least for now."
+            ).shuffled()[0]
+        )
+        true
+    } else {
+        responseCounter++
+        false
     }
 }
