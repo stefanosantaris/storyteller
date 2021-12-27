@@ -15,3 +15,12 @@ fun getDidNotUnderstandPhrase(): String {
             "Sorry, I didn't get that.",
             "Sorry, could you repeat that?").shuffled()[0]
 }
+
+fun getDidNotHearPhrase(): String {
+
+    return listOf(
+        "Sorry, I might have missed that.",
+        "Sorry, I didn't hear you.",
+        "Sorry, could you repeat that?").shuffled()[0]
+
+}

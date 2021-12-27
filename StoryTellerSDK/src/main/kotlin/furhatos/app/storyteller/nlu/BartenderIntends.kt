@@ -170,6 +170,6 @@ Tell password
  */
 class TellPassword : Intent() {
     override fun getExamples(lang: Language): List<String> {
-        return listOf("Dawn is breaking", "dawn is breaking", "Dawn is", "dawn is")
+        return listOf("Dawn is breaking", "dawn is breaking", "Dawn is", "dawn is", "breaking", "Darkness", "darkness", "diners breaking")
     }
 }

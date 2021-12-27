@@ -1,17 +1,8 @@
 package furhatos.app.storyteller.flow.TavernScene
 
-import furhatos.app.storyteller.flow.Idle
-import furhatos.app.storyteller.flow.Interaction
-import furhatos.app.storyteller.flow.TavernIdle
-import furhatos.app.storyteller.flow.TavernOptions
-import furhatos.app.storyteller.flow.talkedToBartender
-import furhatos.app.storyteller.nlu.AskForCult
-import furhatos.app.storyteller.nlu.ExpressFear
-import furhatos.app.storyteller.nlu.ExpressInsult
-import furhatos.app.storyteller.nlu.FollowMan
-import furhatos.app.storyteller.nlu.HintAtPassword
-import furhatos.app.storyteller.nlu.IamCop
-import furhatos.app.storyteller.nlu.TellPassword
+import furhatos.app.storyteller.flow.*
+import furhatos.app.storyteller.flow.BasementScene.BasementIntro
+import furhatos.app.storyteller.nlu.*
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
 import furhatos.flow.kotlin.Furhat
@@ -29,7 +20,13 @@ import furhatos.nlu.common.Yes
 
 val IntroBartender: State = state(Interaction) {
     onEntry {
-        if (users.current.talkedToBartender == false) {
+        if (users.current.visitedBasement == true) {
+            random(
+                {furhat.say("As you walk to the bartender again, he looks at you, nodding.")},
+                {furhat.say("While you approach the bartender again, he looks at you and smiles.")},
+                {furhat.say("You decide to go to the bartender again. As he sees you, he smiles.")}
+            )
+        } else if (users.current.talkedToBartender == false) {
             furhat.say(utterance {
                 +"While approaching, the bartender critically examines you."
                 +delay(100)
@@ -49,10 +46,13 @@ val IntroBartender: State = state(Interaction) {
 val DialogBartender_1 = state(parent = TavernOptions) {
     onEntry {
         // change voice and mask
-        changeCharacter(furhat, StoryCharacter.BARTENDER)
-        delay(300)
+        changeCharacter(furhat,StoryCharacter.BARTENDER)
+        delay(600)
 
-        if (users.current.talkedToBartender != true) {
+        if (users.current.visitedBasement == true) {
+            furhat.say("Sir, is it you again? Feel free to go into the basement so you can join the others.")
+            goto(BasementIntro)
+        } else if (users.current.talkedToBartender != true) {
             users.current.talkedToBartender = true
             furhat.say(utterance {
                 + blocking { furhat.gesture(Gestures.ExpressDisgust, async = false) }
@@ -165,6 +165,7 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             + "Oh! Sorry Sir, I did not know that you are a member of the circle."
             + "Please follow me, I will lead you to the others"
         })
+        goto(BasementIntro)
     }
 
     onNoResponse {
@@ -172,21 +173,17 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             { furhat.ask("Why don't you answer me? Are you too afraid to speak?") },
             { furhat.ask("Are you just going to stand there?") },
             { furhat.ask("Are you afraid or why don't you say something?") })
-
-        if (timeToLeave(furhat)) {
-            goto(TavernIdle)
-        }
     }
 
     onResponse(intent = NullIntent) {
-        random(
-            { furhat.say("I can not help you. It's better you leave my tavern.") },
-            { furhat.say("Look, I don't know what you are searching for, but you will not find it here. Just leave.") },
-            { furhat.say("Look, I can not help you. I think it is best you leave my tavern.") })
-
         if (timeToLeave(furhat)) {
             goto(TavernIdle)
         }
+
+        random(
+            { furhat.ask("I can not help you. It's better you leave my tavern.") },
+            { furhat.ask("Look, I don't know what you are searching for, but you will not find it here. Just leave.") },
+            { furhat.ask("Look, I can not help you. I think it is best you leave my tavern.") })
     }
 }
 
@@ -225,8 +222,9 @@ val DialogBartender_FightScene: State = state(parent = TavernOptions) {
         delay(300)
         furhat.say("\"Careful, behind you!\"")
 
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        changeCharacter(furhat,StoryCharacter.NARRATOR)
+        delay(600)
+
         furhat.say("You immediately turn around, but the bartender is too fast. The last thing you see is a club aiming for your head.")
         furhat.say("Then, it gets dark...")
 
