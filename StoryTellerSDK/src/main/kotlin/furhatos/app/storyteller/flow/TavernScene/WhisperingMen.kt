@@ -188,7 +188,7 @@ val DialogWhiserpingMen_1 = state(parent = TavernOptions) {
         furhat.setCharacter("Jamie")
         delay(600)
 
-        goto(AlleyArrival)
+        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
     }
 
     onResponse<LeaveToTownSquare> {
@@ -315,7 +315,7 @@ val DialogWhiserpingMen_Bribing : State = state(parent = TavernOptions) {
         furhat.setCharacter("Jamie")
         delay(600)
 
-        goto(AlleyArrival)
+        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
     }
 
     onResponse<LeaveToTownSquare> {

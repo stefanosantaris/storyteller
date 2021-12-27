@@ -148,6 +148,7 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             + "Oh! Sorry Sir, I did not know that you are a member of the circle."
             + "Please follow me, I will lead you to the others"
         })
+        goto(BasementIntro)
     }
 
     onNoResponse {
@@ -170,7 +171,7 @@ val DialogBartender_1 = state(parent = TavernOptions) {
         furhat.setCharacter("Jamie")
         delay(600)
 
-        goto(AlleyArrival)
+        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
     }
 
     onResponse<LeaveToTownSquare> {

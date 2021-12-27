@@ -12,7 +12,7 @@ val TavernOptions = state(parent = Interaction) {
         furhat.setCharacter("Jamie")
         delay(600)
 
-        goto(AlleyArrival)
+        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
     }
 
     onResponse<LeaveToAlley> {
@@ -20,7 +20,7 @@ val TavernOptions = state(parent = Interaction) {
         furhat.setCharacter("Jamie")
         delay(600)
 
-        goto(AlleyArrival)
+        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
     }
 
     onButton("Leave and go to the town square"){
@@ -77,7 +77,7 @@ val TavernArrival = state(parent = TavernOptions) {
         furhat.setCharacter("Jamie")
         delay(600)
 
-        goto(AlleyArrival)
+        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
     }
 
     onResponse<LeaveToTownSquare> {
