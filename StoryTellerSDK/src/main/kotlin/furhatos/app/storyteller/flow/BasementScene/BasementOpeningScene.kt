@@ -1,7 +1,7 @@
 package furhatos.app.storyteller.flow.BasementScene
 
 import furhatos.app.storyteller.flow.Interaction
-import furhatos.app.storyteller.flow.TavernArrival
+import furhatos.app.storyteller.flow.TavernIdle
 import furhatos.app.storyteller.flow.visitedBasement
 import furhatos.app.storyteller.nlu.EnterCorridor
 import furhatos.app.storyteller.nlu.GoBack
@@ -15,17 +15,17 @@ The user climbs down a steep wooden ladder into the tavern's basement.
 val BasementIntro = state(Interaction) {
     onEntry {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         if (users.current.visitedBasement != true) {
             furhat.say(dialogStrings["onFirstArrival1"]!!)
             furhat.say(dialogStrings["onFirstArrival2"]!!)
             furhat.say(dialogStrings["onFirstArrival3"]!!)
             furhat.say(dialogStrings["onFirstArrival4"]!!)
             changeCharacter(furhat, StoryCharacter.BARTENDER)
-            delay(300)
+            delay(600)
             furhat.say(dialogStrings["onFirstArrivalBartender"]!!)
             changeCharacter(furhat, StoryCharacter.NARRATOR)
-            delay(300)
+            delay(600)
             furhat.say(dialogStrings["onFirstArrival5"]!!)
             users.current.visitedBasement = true
         } else {
@@ -47,7 +47,7 @@ val BasementIntro = state(Interaction) {
             {furhat.say("You decide to climb the ladder back up again.")},
             {furhat.say("As the fear comes over you, you decide to follow the barmen back up again.")}
         )
-        goto(TavernArrival)
+        goto(TavernIdle)
     }
 
     onNoResponse {
@@ -65,11 +65,11 @@ private val dialogStrings = mapOf(
     "onFirstArrival1" to
             "The barmen directs you to follow him down a steep wooden ladder into the tavern's basement.",
     "onFirstArrival2" to
-            "As you reach the end of this ladder, you see a room full of beer barrels and other supplies." +
+            "As you reach the end of the ladder, you see a room full of beer barrels and other supplies. " +
             "Although the basement is quite dark, you can not find anything suspicious about this place.",
     "onFirstArrival3" to
-            "Suddenly, the barmen pulls on a torch that is connected to one of the basement's doors, " +
-            "and a shelf full of supplies swings wide open. Behind that shelf, you can see a dark corridor leading into the dark.",
+            "Suddenly, the barmen pulls on a torch that is connected to one of the basement's walls, " +
+            "and a shelf full of supplies swings wide open. Behind that shelf, you can see a long corridor leading into the dark.",
     "onFirstArrival4" to
             "The barmen hands you the torch and says:",
     "onFirstArrivalBartender" to
@@ -77,6 +77,6 @@ private val dialogStrings = mapOf(
     "onFirstArrival5" to
             "Then, the barmen makes his way up the wooden ladder again. You look into the dark corridor and wonder whether you should enter it.",
     "onReArrival" to
-            "You climb down the steep ladder into the basement again and pull the torch that is connected to the basement's wall." +
-            "As the shelf swings wide open, you decide to walk straight into the dark corridor."
+            "You climb down the steep ladder into the basement again and pull the torch that is connected to the basement's wall. " +
+            "As the shelf swings wide open, you stand in front of the dark corridor."
 )

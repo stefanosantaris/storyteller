@@ -38,6 +38,7 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
         entered_onResponse = 0
         // change voice and mask
         changeCharacter(furhat, StoryCharacter.WHISPERING_MAN)
+        delay(600)
 
         if ( users.current.talkedToWhisperingMen == false) {
             users.current.talkedToWhisperingMen = true
@@ -94,15 +95,15 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
     onResponse<IamCop> {
         random(
             {furhat.ask(utterance {
-                + "You are a cop?"
+                + "You are a watchman?"
                 + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}
-                + "If there is one thing we don't like, it will be cops sniffing around in our local. So leave!"})},
+                + "If there is one thing we don't like, it will be watchmen sniffing around in our local. So leave!"})},
             {furhat.ask(utterance {
-                + "What? A cop in our local?"
+                + "What? A watchman in our local?"
                 + blocking {furhat.gesture(Gestures.ExpressAnger, async = false)}
-                + "We don't like cops! What do you want here?"})},
+                + "We don't like watchmen! What do you want here?"})},
             {furhat.ask(utterance {
-                + "Wait, a cop?"
+                + "Wait, a watchman?"
                 + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}
                 + "What are you doing sniffing around in our favorite tavern? You better leave."})}
         )
@@ -168,6 +169,8 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
                 + "He will guide you to the others."
             })}
         )
+        changeCharacter(furhat,StoryCharacter.NARRATOR)
+        delay(600)
         goto(TavernIdle)
     }
 
@@ -178,27 +181,19 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
             {furhat.ask("Are you afraid or why don't you speak with us?")})
     }
 
-    onResponse<TalkToBartender> {
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setCharacter("Jamie")
-        delay(600)
-
-        goto(IntroBartender)
-    }
-
     onResponse(intent = NullIntent) {
-        random(
-            {furhat.ask("Look, we can not help you. It's better that you leave this tavern.")},
-            {furhat.ask("Man, we don't know what you are talking about. You better leave.")},
-            {furhat.ask("What are you talking about? It might be better that you leave.")})
-
-        if (entered_onResponse > 2) {
+        if (entered_onResponse > 1) {
             changeCharacter(furhat, StoryCharacter.NARRATOR)
             furhat.say("You think it might be best to leave the men alone, at least for now.")
             goto(TavernIdle)
         } else {
-            entered_onResponse++
+            entered_onResponse += 1
         }
+
+        random(
+            {furhat.ask("Look, we can not help you. It's better that you leave this tavern.")},
+            {furhat.ask("Man, we don't know what you are talking about. You better leave.")},
+            {furhat.ask("What are you talking about? It might be better that you leave.")})
     }
 }
 
@@ -232,7 +227,7 @@ val DialogWhisperingMen_FightScene : State = state(parent = TavernOptions) {
 
     onResponse<Yes> {
         changeCharacter(furhat,StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
 
         furhat.say("You decide to go out with the two men to start a fight.")
         furhat.say("As you step into the alley, you notice that it already got dark.")

@@ -27,7 +27,7 @@ val TavernOptions = state(parent = Interaction) {
 val TavernArrival = state(parent = TavernOptions) {
     onEntry {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
 
         if (users.current.visitedTavern != true) {
             furhat.say(dialogStrings["onFirstArrival1"]!!)
@@ -59,7 +59,6 @@ val TavernArrival = state(parent = TavernOptions) {
 }
 
 val TavernIdle = state(parent = TavernOptions) {
-
     onEntry {
         val whisperingMenString =
                 if (users.current.talkedToWhisperingMen != true)
@@ -67,10 +66,14 @@ val TavernIdle = state(parent = TavernOptions) {
                 else
                     "The two men are still sitting at their table, throwing suspicious glances at you."
         val bartenderString =
-                if (users.current.talkedToBartender != true)
+                if (users.current.talkedToBartender != true) {
                     "Behind the bar, a big dangerous looking man is observing you, while he pretends to clean the counter."
-                else
-                    "The bartender is looking at you with disgust." // TODO: Change if you can win bartenders trust
+                } else {
+                    if (users.current.visitedBasement != true)
+                        "The bartender is looking at you with disgust."
+                    else
+                        "The barmen looks at you, briefly nodding."
+                }
         val doorString = "Behind you is the door to the alley."
 
         furhat.say(utterance {

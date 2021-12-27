@@ -29,11 +29,11 @@ private val dialogStrings = mapOf(
             "You decide to turn out your torch so that nobody will see you. As you carefully move forward, " +
             "you see that the corridor leads to a big cave, where hundreds of cultists are standing around a big burning fire dancing and singing.",
     "onArrival3" to
-            "You also see several priests in black robes standing near a pile of what you believe to be dead animal bodies." +
+            "You also see several priests in black robes standing near a pile of what you believe to be dead animal bodies.",
     "onArrival4" to
             "As two priests begin to throw one of the dead bodies into the fire, a smell of burned meat fills the air.",
     "onArrival5" to
-            "You are certain that you have reached the main meeting place of the cult. This is your chance to get rid of this god damn cult once and for all." +
+            "You are certain that you have reached the main meeting place of the cult. This is your chance to get rid of this god damn cult, once and for all.",
     "onArrival6" to
             "You head back immediately to notify the other sheriffs and watchmen of what you have found out. Together, you rush into the tavern and arrest " +
             "the cultists."

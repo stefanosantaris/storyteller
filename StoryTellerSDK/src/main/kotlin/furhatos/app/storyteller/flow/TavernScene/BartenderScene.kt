@@ -13,7 +13,13 @@ import furhatos.nlu.common.Yes
 
 val IntroBartender : State = state(Interaction) {
     onEntry {
-        if (users.current.talkedToBartender == false) {
+        if (users.current.visitedBasement == true) {
+            random(
+                {furhat.say("As you walk to the bartender again, he looks at you, nodding.")},
+                {furhat.say("While you approach the bartender again, he looks at you and smiles.")},
+                {furhat.say("You decide to go to the bartender again. As he sees you, he smiles.")}
+            )
+        } else if (users.current.talkedToBartender == false) {
             furhat.say(utterance {
                 +"While approaching, the bartender critically examines you."
                 +delay(100)
@@ -35,9 +41,12 @@ val DialogBartender_1 = state(parent = TavernOptions) {
         entered_onResponse = 0
         // change voice and mask
         changeCharacter(furhat,StoryCharacter.BARTENDER)
-        delay(300)
+        delay(600)
 
-        if (users.current.talkedToBartender != true) {
+        if (users.current.visitedBasement == true) {
+            furhat.say("Sir, is it you again? Feel free to go into the basement so you can join the others.")
+            goto(BasementIntro)
+        } else if (users.current.talkedToBartender != true) {
             users.current.talkedToBartender = true
             furhat.say(utterance {
                 + blocking {furhat.gesture(Gestures.ExpressDisgust, async = false)}
@@ -160,26 +169,20 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             {furhat.ask("Are you afraid or why don't you say something?")})
     }
 
-    onResponse<TalkToWhisperingMen> {
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(600)
-
-        goto(IntroWhisperingMen)
-    }
-
     onResponse(intent = NullIntent) {
-        random(
-            {furhat.say("I can not help you. It's better you leave my tavern.")},
-            {furhat.say("Look, I don't know what you are searching for, but you will not find it here. Just leave.")},
-            {furhat.say("Look, I can not help you. I think it is best you leave my tavern.")})
-
-        if (entered_onResponse > 2){
+        if (entered_onResponse > 1){
             changeCharacter(furhat, StoryCharacter.NARRATOR)
+            delay(600)
             furhat.say("You decide to leave the bartender alone for now.")
             goto(TavernIdle)
         } else {
-            entered_onResponse++
+            entered_onResponse += 1
         }
+
+        random(
+            {furhat.ask("I can not help you. It's better you leave my tavern.")},
+            {furhat.ask("Look, I don't know what you are searching for, but you will not find it here. Just leave.")},
+            {furhat.ask("Look, I can not help you. I think it is best you leave my tavern.")})
     }
 }
 
@@ -219,7 +222,7 @@ val DialogBartender_FightScene : State = state(parent = TavernOptions) {
         furhat.say("\"Careful, behind you!\"")
 
         changeCharacter(furhat,StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         furhat.say("You immediately turn around, but the bartender is too fast. The last thing you see is a club aiming for your head.")
         furhat.say("Then, it gets dark...")
 
