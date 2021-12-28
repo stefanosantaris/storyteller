@@ -1,4 +1,4 @@
-package furhatos.app.storyteller.utils
+package furhatos.app.storyteller.utils.emotion
 
 import java.time.OffsetDateTime
 
