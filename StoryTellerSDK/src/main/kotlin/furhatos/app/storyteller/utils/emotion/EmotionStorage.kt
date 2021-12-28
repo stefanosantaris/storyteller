@@ -1,8 +1,17 @@
-package furhatos.app.storyteller.utils
+package furhatos.app.storyteller.utils.emotion
 
-import com.google.common.collect.EvictingQueue
+import java.util.ArrayDeque
 
-object EmotionSingleton{
-    val emotionQueue: EvictingQueue<EmotionRecord> = EvictingQueue.create<EmotionRecord>(100)
+object EmotionStorage{
+    val emotionQueue: ArrayDeque<EmotionRecord> = ArrayDeque<EmotionRecord>(100)
 
+    fun getLatestEmotion(): EmotionRecord {
+        return emotionQueue.first()
+    }
+
+    fun getLatestEmotions(number:Int): List<Any> {
+        val emotions =  emotionQueue.toArray()
+        return emotions.take(number)
+
+    }
 }
