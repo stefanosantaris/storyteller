@@ -8,5 +8,6 @@ fun getConnectedSocket(socketType: Int, port: String, receiveTimeout: Int = -1):
     val socket = context.socket(socketType)
     if (receiveTimeout >= 0) socket.receiveTimeOut = receiveTimeout
     socket.connect(port)
+    socket.subscribe("emotion")
     return socket
 }
