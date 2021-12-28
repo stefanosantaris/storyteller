@@ -36,7 +36,7 @@ class Good : EnumEntity(stemming = false, speechRecPhrases = true) {
     }
 }
 
-class Bribe(val good : Good? = null): Intent() {
+class Bribe(val good: Good? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I can give you some @good", "give you @good", "Would you like some @good", "Would you like @good", "like some @good",
         "@good", "I have some @good", "I have @good", "have @good", "how about some @good", "how about @good", "can I bribe you with @good",

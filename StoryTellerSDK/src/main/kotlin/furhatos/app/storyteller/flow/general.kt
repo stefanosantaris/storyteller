@@ -1,12 +1,20 @@
 package furhatos.app.storyteller.flow
+import furhatos.app.storyteller.flow.TavernScene.IntroWhisperingMen
 import furhatos.app.storyteller.nlu.TellNameBriefly
 import furhatos.app.storyteller.robotName
-import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.voice.PollyNeuralVoice
-import furhatos.flow.kotlin.voice.PollyVoice
+import furhatos.app.storyteller.utils.StoryCharacter
+import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.flow.kotlin.State
+import furhatos.flow.kotlin.furhat
+import furhatos.flow.kotlin.onResponse
+import furhatos.flow.kotlin.state
+import furhatos.flow.kotlin.users
+import furhatos.flow.kotlin.onUserEnter
+import furhatos.flow.kotlin.onUserLeave
+import furhatos.flow.kotlin.utterance
 import furhatos.gestures.Gestures
 import furhatos.nlu.common.TellName
-import furhatos.util.*
+import furhatos.records.User
 
 val Idle: State = state {
 
@@ -15,23 +23,11 @@ val Idle: State = state {
      */
     init {
         // set voice and face
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setMask("adult")
-        furhat.setCharacter("Jamie")
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
         if (users.count > 0) {
             furhat.attend(users.random)
-            goto(SelfPresent)
-
-            /*
-            // temp
-            users.current.visitedTavern = false
-            users.current.visitedWoman = false
-            users.current.visitedTownSquare = false
-            users.current.visitedAlley = false
-            users.current.talkedToBartender = false
-            users.current.talkedToWhisperingMen = false
-            goto(IntroDialogWoman)
-            */
+            initializeUserGameState(users.current)
+            goto(TavernArrival)
         }
     }
 
@@ -53,12 +49,7 @@ val Idle: State = state {
                     furhat.attend(users.current)
                     val validate: Boolean? = furhat.askYN("Do you want to play again?")
                     if (validate == true) {
-                        users.current.visitedTavern = false
-                        users.current.visitedWoman = false
-                        users.current.visitedTownSquare = false
-                        users.current.visitedAlley = false
-                        users.current.talkedToBartender = false
-                        users.current.talkedToWhisperingMen = false
+                        initializeUserGameState(users.current)
                         goto(OpeningScene)
                     }
                 }
@@ -73,21 +64,9 @@ val Idle: State = state {
         furhat.attend(it)
 
         // set voice and face
-        furhat.voice = PollyNeuralVoice.Joey()
-        furhat.setMask("adult")
-        furhat.setCharacter("Jamie")
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        initializeUserGameState(users.current)
         goto(SelfPresent)
-
-        /*
-        // temp
-        users.current.visitedTavern = false
-        users.current.visitedWoman = false
-        users.current.visitedTownSquare = false
-        users.current.visitedAlley = false
-        users.current.talkedToBartender = false
-        users.current.talkedToWhisperingMen = false
-        goto(IntroDialogWoman)
-         */
     }
 }
 
@@ -118,9 +97,9 @@ val Interaction: State = state {
         // attend new entering user
         furhat.attend(it)
         random(
-            {furhat.say("Hello there! Lovely that you joined our small game.")},
-            {furhat.say("Hello! Nice to have more people joining today!")},
-            {furhat.say("Welcome! What a pleasure to see you.")}
+            { furhat.say("Hello there! Lovely that you joined our small game.") },
+            { furhat.say("Hello! Nice to have more people joining today!") },
+            { furhat.say("Welcome! What a pleasure to see you.") }
         )
         furhat.glance(mainUser)
         furhat.attend(mainUser)
@@ -129,8 +108,7 @@ val Interaction: State = state {
     }
 }
 
-
-val CatchName: State = state(Interaction){
+val CatchName: State = state(Interaction) {
     /*
     Tell name in brief fashion
      */
@@ -138,12 +116,7 @@ val CatchName: State = state(Interaction){
         users.current.name = "${it.intent.name}"
         users.current.wantsPlay = true
         users.current.hasPlayed = false
-        users.current.visitedTavern = false
-        users.current.visitedWoman = false
-        users.current.visitedTownSquare = false
-        users.current.visitedAlley = false
-        users.current.talkedToBartender = false
-        users.current.talkedToWhisperingMen = false
+        initializeUserGameState(users.current)
         goto(process_name("${it.intent.name}"))
     }
 
@@ -154,12 +127,7 @@ val CatchName: State = state(Interaction){
         users.current.name = "${it.intent.name}"
         users.current.wantsPlay = true
         users.current.hasPlayed = false
-        users.current.visitedTavern = false
-        users.current.visitedWoman = false
-        users.current.visitedTownSquare = false
-        users.current.visitedAlley = false
-        users.current.talkedToBartender = false
-        users.current.talkedToWhisperingMen = false
+        initializeUserGameState(users.current)
         goto(process_name("${it.intent.name}"))
     }
 
@@ -196,13 +164,7 @@ val CatchName: State = state(Interaction){
             if (validate == true) {
                 users.current.name = it.text
                 users.current.wantsPlay = true
-                users.current.hasPlayed = false
-                users.current.visitedTavern = false
-                users.current.visitedWoman = false
-                users.current.visitedTownSquare = false
-                users.current.visitedAlley = false
-                users.current.talkedToBartender = false
-                users.current.talkedToWhisperingMen = false
+                initializeUserGameState(users.current)
                 random(
                     {
                         furhat.say(utterance {
@@ -242,7 +204,7 @@ val CatchName: State = state(Interaction){
 /*
 Process name of user
  */
-fun process_name(userName : String) : State = state {
+fun process_name(userName: String): State = state {
     onEntry {
         if (userName == robotName) {
             random(
@@ -296,4 +258,14 @@ fun process_name(userName : String) : State = state {
         }
         goto(PresentGame)
     }
+}
+
+fun initializeUserGameState(user: User) {
+    user.visitedTavern = false
+    user.visitedWoman = false
+    user.visitedTownSquare = false
+    user.visitedAlley = false
+    user.talkedToBartender = false
+    user.talkedToWhisperingMen = false
+    user.visitedBasement = false
 }
