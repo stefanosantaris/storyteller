@@ -20,16 +20,20 @@ fun start_emotion_detector() {
 
         if (message.size > 1) {
             val emotion: String = message[1]
+
+            val confidence: Float = message[2].toFloat()
             // get current time in UTC, no millis needed
             val nowInUtc: OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC)
             // Register the emotion record in the queue
-            val record: EmotionRecord = EmotionRecord(emotion, nowInUtc)
+            val record: EmotionRecord = EmotionRecord(emotion, confidence, nowInUtc)
             EmotionStorage.emotionQueue.push(record)
-
-
-//            println(EmotionStorage.getLatestEmotion().emotion)
-//            println("All EMOTIONS")
-//            val allEmotions = EmotionStorage.getLatestEmotions(3)
+//
+//            println(EmotionStorage.getDominantEmotion(4))
+//
+//
+////            println(EmotionStorage.getLatestEmotion().emotion)
+////            println("All EMOTIONS")
+//            val allEmotions = EmotionStorage.getLatestEmotions(1)
 //            for (record in allEmotions) {
 //                val emotionRecord: EmotionRecord = record as EmotionRecord
 //                println(emotionRecord.emotion)
