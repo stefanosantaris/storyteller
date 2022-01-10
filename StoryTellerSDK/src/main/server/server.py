@@ -56,14 +56,17 @@ while True:
     faces = facecasc.detectMultiScale(gray,scaleFactor=1.3, minNeighbors=5)
 
     emotions = []
+    probabilities = []
     for (x, y, w, h) in faces:
         roi_gray = gray[y:y + h, x:x + w]
         cropped_img = np.expand_dims(np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0)
         prediction = model.predict(cropped_img)
         maxindex = int(np.argmax(prediction))
         emotions.append(emotion_dict[maxindex])
+        probabilities.append(prediction[0][maxindex])
 
     if len(emotions) > 0:
         print(emotions[0])
+        print(probabilities[0])
         topic = "emotion"
-        socket.send_string("%s %s" % (topic, emotions[0]))
+        socket.send_string("%s %s %s" % (topic, emotions[0], probabilities[0]))

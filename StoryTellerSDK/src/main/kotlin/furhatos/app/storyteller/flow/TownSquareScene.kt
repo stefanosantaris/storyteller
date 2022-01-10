@@ -12,6 +12,8 @@ import furhatos.app.storyteller.utils.JokeManager
 import furhatos.app.storyteller.utils.NoMoreJokesException
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.app.storyteller.utils.emotion.EmotionRecord
+import furhatos.app.storyteller.utils.emotion.EmotionStorage
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
 import furhatos.flow.kotlin.onResponse
@@ -105,6 +107,7 @@ val TalkingToJester = state(parent = TownSquareOptions) {
         try {
             val joke = jokeManager.getNextJoke()
             furhat.say(joke)
+
             if (jokeManager.hasMoreJokes()) {
                 furhat.ask("How about another one?")
             } else {
