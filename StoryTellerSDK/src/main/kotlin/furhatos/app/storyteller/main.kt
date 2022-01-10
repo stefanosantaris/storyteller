@@ -14,7 +14,9 @@ val objserv = "tcp://localhost:3333"
 val socket: ZMQ.Socket = getConnectedSocket(ZMQ.SUB, objserv)
 
 fun start_emotion_detector() {
+    println("Emotion detector started")
     while (true) {
+//        Thread.sleep(100)
         val queueMessage: String = socket.recvStr()
         // The first part contains the topic and the second part is the actual message
         val message: List<String> = queueMessage.split(' ')
@@ -47,11 +49,15 @@ fun start_emotion_detector() {
 
 class StorytellerSkill : Skill() {
     override fun start() {
-        start_emotion_detector()
         Flow().run(Idle)
+
     }
 }
 
 fun main(args: Array<String>) {
+    val t = Thread(Runnable {
+        start_emotion_detector()
+    })
+    t.start()
     Skill.main(args)
 }
