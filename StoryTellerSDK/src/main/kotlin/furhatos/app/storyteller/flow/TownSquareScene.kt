@@ -128,7 +128,7 @@ val TalkingToJester = state(parent = TownSquareOptions) {
                         furhat.ask("I have more of those in store, want to hear one?")
                         )
             } else {
-                furhat.say("That was my last one!")
+                furhat.say("That was my last one! Fare well!")
                 jokeManager.reset()
                 visited.add(Interactions.JESTER)
                 goto(TownSquareIdle)

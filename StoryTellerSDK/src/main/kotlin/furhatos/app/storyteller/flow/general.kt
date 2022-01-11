@@ -1,5 +1,7 @@
 package furhatos.app.storyteller.flow
+import furhatos.app.storyteller.flow.TavernScene.IntroBartender
 import furhatos.app.storyteller.flow.TavernScene.IntroWhisperingMen
+import furhatos.app.storyteller.nlu.TalkToWhisperingMen
 import furhatos.app.storyteller.nlu.TellNameBriefly
 import furhatos.app.storyteller.robotName
 import furhatos.app.storyteller.utils.StoryCharacter
@@ -27,7 +29,7 @@ val Idle: State = state {
         if (users.count > 0) {
             furhat.attend(users.random)
             initializeUserGameState(users.current)
-            goto(TavernArrival)
+            goto(PresentGame)
         }
     }
 
