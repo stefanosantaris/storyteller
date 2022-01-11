@@ -63,20 +63,20 @@ val BasementIntro = state(Interaction) {
 
 private val dialogStrings = mapOf(
     "onFirstArrival1" to
-            "The barmen directs you to follow him down a steep wooden ladder into the tavern's basement.",
+            "The barman directs you to follow him down a steep wooden ladder into the tavern's basement.",
     "onFirstArrival2" to
             "As you reach the end of the ladder, you see a room full of beer barrels and other supplies. " +
-            "Although the basement is quite dark, you can not find anything suspicious about this place.",
+            "Although the basement is quite dark, you cannot find anything suspicious about this place.",
     "onFirstArrival3" to
-            "Suddenly, the barmen pulls on a torch that is connected to one of the basement's walls, " +
-            "and a shelf full of supplies swings wide open. Behind that shelf, you can see a long corridor leading into the dark.",
+            "Suddenly, the barman pulls on a torch that is connected to one of the basement's walls, " +
+            "and a shelf full of supplies swings wide open. Behind the shelf, you can see a long corridor leading into the dark.",
     "onFirstArrival4" to
-            "The barmen hands you the torch and says:",
+            "The barman hands you the torch and says:",
     "onFirstArrivalBartender" to
-            "Remember my friend, dawn is breaking. Galos has illuminated.",
+            "Remember my friend, dawn is breaking. Galos has awakened.",
     "onFirstArrival5" to
-            "Then, the barmen makes his way up the wooden ladder again. You look into the dark corridor and wonder whether you should enter it.",
+            "Then, the barman makes his way up the wooden ladder again. You look into the dark corridor and wonder whether or not you should enter it.",
     "onReArrival" to
-            "You climb down the steep ladder into the basement again and pull the torch that is connected to the basement's wall. " +
+            "You climb down the steep ladder into the basement again and pull on the torch that is connected to the basement's wall. " +
             "As the shelf swings wide open, you stand in front of the dark corridor."
 )

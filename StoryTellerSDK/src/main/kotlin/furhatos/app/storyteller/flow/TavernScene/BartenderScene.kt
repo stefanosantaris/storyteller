@@ -57,7 +57,7 @@ val DialogBartender_1 = state(parent = TavernOptions) {
         } else if (users.current.talkedToBartender != true) {
             users.current.talkedToBartender = true
             furhat.say(utterance {
-                + blocking { furhat.gesture(Gestures.ExpressDisgust, async = false) }
+                + blocking { furhat.gesture(Gestures.ExpressDisgust, async = true) }
                 + "What do you want little rascal?"
             })
             furhat.ask("You don’t look like you should be in a bar like this. Why are you here?")
@@ -216,12 +216,12 @@ val DialogBartender_FightScene: State = state(parent = TavernOptions) {
 
     onResponse<Yes> {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         furhat.say("You decide to go out with the bartender to start a fight.")
         furhat.say("As you step into the alley, the woman who was leaning against the wall shouts:")
 
         changeCharacter(furhat, StoryCharacter.ALLEY_WOMAN)
-        delay(300)
+        delay(600)
         furhat.say("\"Careful, behind you!\"")
 
         changeCharacter(furhat,StoryCharacter.NARRATOR)
@@ -253,7 +253,7 @@ val DialogBartender_FightScene: State = state(parent = TavernOptions) {
 private var responseCounter = 0
 
 private fun timeToLeave(furhat: Furhat): Boolean {
-    return if (responseCounter == 3) {
+    return if (responseCounter == 2) {
         responseCounter = 0
         changeCharacter(furhat, StoryCharacter.NARRATOR)
         furhat.say(

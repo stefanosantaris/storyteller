@@ -52,8 +52,9 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
             furhat.say(utterance {
                 +"What do you want?"
                 +blocking {
-                    furhat.gesture(Gestures.ExpressDisgust, async = false)
+                    furhat.gesture(Gestures.ExpressDisgust, async = true)
                 }
+                +delay(300)
             })
             furhat.ask("Can't you see that we are talking?")
         } else {
@@ -309,7 +310,7 @@ val DialogWhisperingMen_Bribing: State = state(parent = TavernOptions) {
 private var responseCounter = 0
 
 private fun timeToLeave(furhat: Furhat): Boolean {
-    return if (responseCounter == 3) {
+    return if (responseCounter == 2) {
         responseCounter = 0
         changeCharacter(furhat, StoryCharacter.NARRATOR)
         furhat.say(
