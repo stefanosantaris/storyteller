@@ -20,6 +20,8 @@ import furhatos.nlu.common.Yes
 
 val IntroBartender: State = state(Interaction) {
     onEntry {
+        changeCharacter(furhat,StoryCharacter.NARRATOR)
+        
         if (users.current.visitedBasement == true) {
             random(
                 {furhat.say("As you walk to the bartender again, he looks at you, nodding.")},
