@@ -62,7 +62,7 @@ val AlleyIdle = state(parent = AlleyOptions) {
 
     onEntry {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
 
         furhat.say(dialogStrings["alleyIdle"]!!)
         furhat.ask(getAskForActionPhrase())
@@ -86,7 +86,7 @@ private val dialogStrings = mapOf(
                 "Up ahead you hear noises from a town square.",
         "onReArrivalFromTownSquare1" to
                 "As you return to the alley, you see that the woman leaning against the tavern's wall is still there.",
-        "onReArrivalFromTTownSquare2" to
+        "onReArrivalFromTownSquare2" to
                 "Next to her is the door to \"The Hidden Goat Tavern\", where you saw the strange man disappear.",
         "alleyIdle" to
                 "Next to the woman is the door to \"The Hidden Goat Tavern\", where you saw the strange man disappear. " +

@@ -109,15 +109,15 @@ val TavernIdle = state(parent = TavernOptions) {
 
 private val dialogStrings = mapOf(
         "onFirstArrival1" to
-                "You decide to enter the tavern with the name \"The Hidden Goat Tavern\".",
+                "You decide to enter \"The Hidden Goat Tavern\".",
         "onFirstArrival2" to
-                "As you open the heavy wooden tavern's door, the smell of " +
+                "As you open the heavy wooden door, the smell of " +
                 "smoke and beer hits you. You briefly scan the room for the man with the weird tattoo on his arm, but you cannot find him.",
         "onFirstArrival3" to
                 "Instead, you see two shady looking men whispering to each other at one of the tavern's tables.",
         "onFirstArrival4" to
                 "Behind the bar, a big dangerous looking man is observing you, while he pretends to clean the counter.",
         "onReArrival" to
-                "You enter \"The Hidden Goat Tavern\". Back in the bar, the bartender is still looking at you grimly, while the two men in the corner are still " +
-                "whispering with each other."
+                "You enter \"The Hidden Goat Tavern\". Back behind the bar, the bartender is still looking at you grimly, while the two men in the corner are still " +
+                "whispering to each other."
 )

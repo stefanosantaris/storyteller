@@ -82,7 +82,7 @@ val DialogWoman_1: State = state(parent = WomanOptions) {
     onEntry {
         // change voice and mask
         changeCharacter(furhat, StoryCharacter.ALLEY_WOMAN)
-        delay(300)
+        delay(600)
 
         if (users.current.visitedWoman != true) {
             users.current.visitedWoman = true
@@ -129,7 +129,7 @@ val DialogWomanAnswer_1_a: State = state(WomanOptions) {
     }
 
     onReentry {
-        furhat.listen(6000)
+        furhat.listen(4000)
     }
 
     onResponse(intent = NullIntent) {
@@ -147,6 +147,7 @@ val DialogWomanAnswer_1_preacherHint: State = state(WomanOptions) {
             +"Leave right now, or we will both be in danger! If you really want to know more, talk to the preacher in the town square."
         })
         changeCharacter(furhat, StoryCharacter.NARRATOR)
+        delay(600)
         furhat.say("As she seems reluctant to talk to you, you decide to leave her alone.")
         goto(AlleyIdle)
     }
@@ -162,7 +163,7 @@ val DialogWomanAnswer_Cop: State = state(DialogWomanAnswer_1_preacherHint) {
         })
 
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         furhat.say("As she seems reluctant to talk to you, you decide to leave her alone.")
 
         goto(AlleyIdle)
@@ -185,7 +186,7 @@ val DialogWomanAnswer_TattooMan: State = state(WomanOptions) {
     }
 
     onReentry {
-        furhat.listen(6000)
+        furhat.listen(4000)
     }
 
     onResponse(intent = NullIntent) {
@@ -196,7 +197,7 @@ val DialogWomanAnswer_TattooMan: State = state(WomanOptions) {
 val DialogWomanAnswer_InfoAboutTavern: State = state(WomanOptions) {
     onEntry {
         furhat.ask(utterance {
-            +"Look, this place is not a good place."
+            +"Look, this is not a good place."
             +blocking {
                 furhat.gesture(Gestures.Shake, async = false)
             }
