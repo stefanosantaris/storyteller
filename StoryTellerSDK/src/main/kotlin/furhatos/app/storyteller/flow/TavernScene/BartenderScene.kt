@@ -164,8 +164,8 @@ val DialogBartender_1 = state(parent = TavernOptions) {
     onResponse<TellPassword> {
         furhat.say(utterance {
             + blocking { furhat.gesture(Gestures.Oh, async = false) }
-            + "Oh! Sorry Sir, I did not know that you are a member of the circle."
-            + "Please follow me, I will lead you to the others"
+            + "Oh! Sorry Sir, I didn't realize that you were a member of the circle."
+            + "Please follow me, I will lead you to the others."
         })
         goto(BasementIntro)
     }

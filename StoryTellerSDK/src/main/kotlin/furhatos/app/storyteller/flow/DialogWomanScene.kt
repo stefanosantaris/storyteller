@@ -120,7 +120,7 @@ val DialogWoman_1: State = state(parent = WomanOptions) {
 val DialogWomanAnswer_1_a: State = state(WomanOptions) {
     onEntry {
         furhat.ask(utterance {
-            +"I can not talk to you!"
+            +"I cannot talk to you!"
             +blocking {
                 furhat.gesture(Gestures.Shake, async = false)
             }
@@ -129,7 +129,7 @@ val DialogWomanAnswer_1_a: State = state(WomanOptions) {
     }
 
     onReentry {
-        furhat.listen(4000)
+        furhat.listen(3000)
     }
 
     onResponse(intent = NullIntent) {
@@ -186,7 +186,7 @@ val DialogWomanAnswer_TattooMan: State = state(WomanOptions) {
     }
 
     onReentry {
-        furhat.listen(4000)
+        furhat.listen(3000)
     }
 
     onResponse(intent = NullIntent) {
@@ -206,7 +206,7 @@ val DialogWomanAnswer_InfoAboutTavern: State = state(WomanOptions) {
     }
 
     onReentry {
-        furhat.listen(6000)
+        furhat.listen(3000)
     }
 
     onResponse(intent = NullIntent) {
