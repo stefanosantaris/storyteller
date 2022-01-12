@@ -96,18 +96,16 @@ val TalkingToJester = state(parent = TownSquareOptions) {
         furhat.say(dialogStrings["jesterOnEntry"]!!)
         changeCharacter(furhat, StoryCharacter.JESTER)
         delay(600)
-        random(
-                furhat.ask("An audience! How about a joke or two?"),
-                furhat.ask("Finally some attention! Care for a joke?"),
-                furhat.ask("Here comes my moment! Would you like to hear a joke?")
-        )
+
+        furhat.ask("Here comes my moment! Would you like to hear a joke?")
+
     }
 
     onReentry {
         random(
-                furhat.ask("How about a joke or two?"),
-                furhat.ask("Care for a joke?"),
-                furhat.ask("Can I interest you in a joke?")
+                {furhat.ask("How about a joke or two?")},
+                {furhat.ask("Care for a joke?")},
+                {furhat.ask("Can I interest you in a joke?")}
                 )
     }
 
@@ -126,9 +124,8 @@ val TalkingToJester = state(parent = TownSquareOptions) {
     onResponse <PleaseRepeat> {
         furhat.say(dialogStrings["jesterOnEntry"]!!)
         random(
-                furhat.ask("An audience! How about a joke or two?"),
-                furhat.ask("Finally some attention! Care for a joke?"),
-                furhat.ask("Here comes my moment! Can I interest you in a joke?")
+                {furhat.ask("Finally some attention! Care for a joke?")},
+                {furhat.ask("Here comes my moment! Can I interest you in a joke?")}
         )
     }
 
@@ -147,6 +144,9 @@ val TalkingToJester = state(parent = TownSquareOptions) {
                 furhat.say("That was my last one! Fare well!")
                 jokeManager.reset()
                 visited.add(Interactions.JESTER)
+                changeCharacter(furhat, StoryCharacter.NARRATOR)
+                delay(600)
+                furhat.say("You thank the friendly jester for his time and take your leave.")
                 goto(TownSquareIdle)
             }
         } catch (e: NoMoreJokesException) {
@@ -240,7 +240,7 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
     }
 
     onResponse<AskMerchantAboutCult> {
-        furhat.say("Don't ask me anything more! If you really have to know, talk to the" +
+        furhat.say("Don't ask me anything more! If you really have to know, talk to the " +
                 "man preaching over there!")
         furhat.ask("Will you buy something or not?")
     }
@@ -281,7 +281,28 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
         changeCharacter(furhat, StoryCharacter.PREACHER)
         delay(600)
         furhat.say("I knew it! I could see it in your eyes!")
+        goto(ReceivingPassword)
 
+    }
+
+    onResponse<No> {
+        changeCharacter(furhat, StoryCharacter.PREACHER)
+        delay(600)
+        furhat.say("It matters not. In time you will inevitably reckon the greatness of our lord.")
+        goto(ReceivingPassword)
+
+    }
+
+    onResponse<RequestGodExplanation> {
+        changeCharacter(furhat, StoryCharacter.PREACHER)
+        furhat.say(dialogStrings["godExplanation"]!!)
+        delay(500)
+        furhat.ask("I ask you again, are you a follower?")
+    }
+}
+
+val ReceivingPassword = state(parent = TownSquareOptions) {
+    onEntry {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
         delay(600)
         furhat.say(dialogStrings["receivePassword1"]!!)
@@ -292,9 +313,9 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
         delay(200)
         furhat.say(PollyVoice.Justin().whisper(
                 "Dawn ${furhat.voice.pause("300ms")} " +
-                "is ${furhat.voice.pause("300ms")} " +
-                "breaking ${furhat.voice.pause("300ms")}"
-            )
+                        "is ${furhat.voice.pause("300ms")} " +
+                        "breaking ${furhat.voice.pause("300ms")}"
+        )
         )
         delay(300)
         furhat.say(PollyVoice.Justin().whisper(dialogStrings["receivePassword3"]!!))
@@ -307,34 +328,6 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
 
         visited.add(Interactions.PREACHER)
         goto(TownSquareIdle)
-    }
-
-    onResponse<No> {
-        furhat.say("It matters not. In time you will inevitably reckon the greatness of our lord.")
-
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(600)
-        furhat.say(dialogStrings["receivePassword1"]!!)
-
-        changeCharacter(furhat, StoryCharacter.PREACHER)
-        delay(600)
-        furhat.say(PollyVoice.Justin().whisper(dialogStrings["receivePassword2"]!!))
-
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(600)
-        furhat.say("A bit shook from the interaction, you leave the preacher and his surrounding crowd. " +
-                "You remember seeing the tattooed man disappearing into the tavern he spoke about. Maybe you " +
-                "need to make your way back there in order to find out more.")
-
-        visited.add(Interactions.PREACHER)
-        goto(TownSquareIdle)
-    }
-
-    onResponse<RequestGodExplanation> {
-        changeCharacter(furhat, StoryCharacter.PREACHER)
-        furhat.say(dialogStrings["godExplanation"]!!)
-        delay(500)
-        furhat.ask("I ask you again, are you a follower?")
     }
 }
 
@@ -360,11 +353,11 @@ private val dialogStrings = mapOf(
                 "There is a gathering tonight. Go to the Hidden Goat Tavern and tell the man behind the bar the following: ",
         "receivePassword3" to "There you will find out more.",
         "merchantOnEntry1" to
-                "You approach the merchant stand and find that a young woman there selling meat and cheese. She looks at " +
+                "You approach the merchant stand and find a young woman there selling meat and cheese. She looks at " +
                 "you with despair in her eyes.",
         "merchantOnEntry2" to
                 "You haven't seen my brother, have you? He has been gone for several days " +
-                "and I am beginning to worry... I wish he never would have gotten involved with those damn cultists!",
+                "and I am beginning to worry... I wish he never would have gotten involved with those damned cultists!",
         "merchantOnEntry3" to
                 "She suddenly looks startled, as if she had just caught herself saying something forbidden.",
         "merchantOnEntry4" to

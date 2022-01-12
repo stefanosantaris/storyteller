@@ -16,7 +16,7 @@ val RitualEndScene = state(Interaction) {
         furhat.say(dialogStrings["onArrival5"]!!)
         furhat.say(dialogStrings["onArrival6"]!!)
 
-        furhat.say("Congratulations! You are the hero of the city.")
+        furhat.say("Congratulations! You are the hero of Millstone.")
         furhat.say("You have successfully solved the game.")
         goto(Idle)
     }
@@ -33,7 +33,7 @@ private val dialogStrings = mapOf(
     "onArrival4" to
             "As two priests throw one of the dead bodies into the fire, the smell of burnt meat fills the air.",
     "onArrival5" to
-            "You are certain that you have reached the headquarter of the worshippers. This is your chance to get rid of this god damn cult, once and for all.",
+            "You are certain that you have reached the headquarter of the worshippers. This is your chance to get rid of this god forsaken cult, once and for all.",
     "onArrival6" to
             "You head back immediately to notify the other sheriffs and watchmen of what you have found out. Together, you rush into the tavern and arrest " +
             "the cultists."
