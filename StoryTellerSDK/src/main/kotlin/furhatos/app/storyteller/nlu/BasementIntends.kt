@@ -151,7 +151,10 @@ class Right : EnumEntity(stemming = false, speechRecPhrases = true) {
             "The right one",
             "the right one",
             "Beast",
-            "beast"
+            "beast",
+            "eastern",
+            "eastern",
+            "the eastern corridor"
         )
     }
 }

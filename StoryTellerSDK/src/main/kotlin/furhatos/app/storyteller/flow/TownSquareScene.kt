@@ -2,8 +2,8 @@ package furhatos.app.storyteller.flow
 
 import furhatos.app.storyteller.nlu.AskAboutBrother
 import furhatos.app.storyteller.nlu.AskMerchantAboutCult
+import furhatos.app.storyteller.nlu.GoToAlley
 import furhatos.app.storyteller.nlu.KillJester
-import furhatos.app.storyteller.nlu.LeaveToAlley
 import furhatos.app.storyteller.nlu.ListenToPreacher
 import furhatos.app.storyteller.nlu.PleaseRepeat
 import furhatos.app.storyteller.nlu.RequestGodExplanation
@@ -36,7 +36,7 @@ val TownSquareOptions: State = state(Interaction) {
         goto(ListeningToPreacher)
     }
 
-    onResponse<LeaveToAlley> {
+    onResponse<GoToAlley> {
         goto(alleyArrival(EnteredAlleyFrom.TOWN_SQUARE))
     }
 }

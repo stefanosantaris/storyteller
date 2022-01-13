@@ -52,7 +52,7 @@ val DialogBartender_1 = state(parent = TavernOptions) {
         delay(600)
 
         if (users.current.visitedBasement == true) {
-            furhat.say("Sir, is it you again? Feel free to go into the basement so you can join the others.")
+            furhat.say("Is it you again? Feel free to go into the basement so you can join the others.")
             goto(BasementIntro)
         } else if (users.current.talkedToBartender != true) {
             users.current.talkedToBartender = true
@@ -75,6 +75,15 @@ val DialogBartender_1 = state(parent = TavernOptions) {
             { furhat.ask("So what do you want rascal?") },
             { furhat.ask("So what do you want?") },
             { furhat.ask("So tell me, rascal, what do you want from me?") })
+    }
+
+    onResponse<BuyDrink> {
+        random(
+
+                { furhat.say("I'm not serving scum like you.") },
+                { furhat.say("Would I give my fine beverage to a rat? Hah! Forget it.") }
+        )
+        furhat.ask("Something else, punk?")
     }
 
     onResponse<ExpressFear> {
@@ -164,7 +173,7 @@ val DialogBartender_1 = state(parent = TavernOptions) {
     onResponse<TellPassword> {
         furhat.say(utterance {
             + blocking { furhat.gesture(Gestures.Oh, async = false) }
-            + "Oh! Sorry Sir, I didn't realize that you were a member of the circle."
+            + "Oh! I apologize, I didn't realize that you were a member of the circle."
             + "Please follow me, I will lead you to the others."
         })
         goto(BasementIntro)
