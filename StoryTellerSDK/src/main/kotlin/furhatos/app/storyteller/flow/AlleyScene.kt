@@ -1,6 +1,7 @@
 package furhatos.app.storyteller.flow
 
 import furhatos.app.storyteller.nlu.EnterTavern
+import furhatos.app.storyteller.nlu.GoToTownSquare
 import furhatos.app.storyteller.nlu.LeaveToTownSquare
 import furhatos.app.storyteller.nlu.TalkToWoman
 import furhatos.app.storyteller.utils.StoryCharacter
@@ -14,7 +15,7 @@ import furhatos.flow.kotlin.users
 
 val AlleyOptions: State = state(Interaction) {
 
-    onResponse<LeaveToTownSquare> {
+    onResponse<GoToTownSquare> {
         goto(TownSquareArrival)
     }
 

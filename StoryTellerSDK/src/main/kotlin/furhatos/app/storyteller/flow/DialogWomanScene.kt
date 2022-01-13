@@ -140,10 +140,11 @@ val DialogWomanAnswer_1_a: State = state(WomanOptions) {
 val DialogWomanAnswer_1_preacherHint: State = state(WomanOptions) {
     onEntry {
         furhat.say(utterance {
-            +"As I already told you, I cannot tell you anything!"
+            +"As I already said, I cannot tell you anything!"
             +blocking {
-                furhat.gesture(Gestures.GazeAway, async = false)
+                furhat.gesture(Gestures.GazeAway, async = true)
             }
+            +delay(200)
             +"Leave right now, or we will both be in danger! If you really want to know more, talk to the preacher in the town square."
         })
         changeCharacter(furhat, StoryCharacter.NARRATOR)

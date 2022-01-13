@@ -2,6 +2,8 @@ package furhatos.app.storyteller.flow
 
 import furhatos.app.storyteller.flow.TavernScene.IntroBartender
 import furhatos.app.storyteller.flow.TavernScene.IntroWhisperingMen
+import furhatos.app.storyteller.nlu.BuyDrink
+import furhatos.app.storyteller.nlu.GoToAlley
 import furhatos.app.storyteller.nlu.LeaveToAlley
 import furhatos.app.storyteller.nlu.LeaveToTownSquare
 import furhatos.app.storyteller.nlu.TalkToBartender
@@ -19,6 +21,10 @@ import furhatos.flow.kotlin.users
 import furhatos.nlu.NullIntent
 
 val TavernOptions = state(parent = Interaction) {
+    onResponse<GoToAlley> {
+        goto(alleyArrival(EnteredAlleyFrom.TAVERN))
+    }
+
     onResponse<LeaveToAlley> {
         goto(alleyArrival(EnteredAlleyFrom.TAVERN))
     }
@@ -29,6 +35,10 @@ val TavernOptions = state(parent = Interaction) {
     }
 
     onResponse<TalkToBartender> {
+        goto(IntroBartender)
+    }
+
+    onResponse<BuyDrink> {
         goto(IntroBartender)
     }
 

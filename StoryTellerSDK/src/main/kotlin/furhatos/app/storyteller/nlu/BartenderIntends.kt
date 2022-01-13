@@ -173,3 +173,33 @@ class TellPassword : Intent() {
         return listOf("Dawn is breaking", "dawn is breaking", "Dawn is", "dawn is", "breaking", "Darkness", "darkness", "diners breaking")
     }
 }
+
+class Drink : EnumEntity(stemming = false, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf(
+                "beer",
+                "drink",
+                "vodka",
+                "something strong",
+                "liquor",
+                "something for my nerves",
+                "wine",
+                "mead",
+                "beverage"
+        )
+    }
+}
+
+class BuyDrink(val drink: Drink? = null) : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf(
+                "Buy a @drink",
+                "Give me a @drink",
+                "I will have a @drink",
+                "I want to buy a @drink",
+                "I would like to have a @drink",
+                "A @drink please",
+                "A @drink"
+        )
+    }
+}

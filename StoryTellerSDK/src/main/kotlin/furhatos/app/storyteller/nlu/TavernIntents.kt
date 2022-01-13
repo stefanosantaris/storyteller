@@ -32,6 +32,8 @@ class WantTo : EnumEntity(stemming = false, speechRecPhrases = true) {
 class Bartender : EnumEntity(stemming = false, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         return listOf(
+                "counter",
+            "barkeeper",
             "Bartender",
             "bartender",
             "Man behind the bar",
@@ -55,7 +57,8 @@ class Bartender : EnumEntity(stemming = false, speechRecPhrases = true) {
             "Dangerous man",
             "dangerous man",
             "Dangerous men",
-            "dangerous men"
+            "dangerous men",
+            "man behind counter"
         )
     }
 }
@@ -72,24 +75,14 @@ Express that you want to talk to the two men
 class TalkingMen : EnumEntity(stemming = false, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         return listOf(
-            "Man",
-            "man",
             "Men",
             "men",
-            "Talking man",
-            "talking man",
             "Talking men",
             "talking men",
-            "Man talking",
-            "man talking",
             "Men talking",
             "men talking",
-            "Man whispering",
-            "man whispering",
             "Men whispering",
             "men whispering",
-            "Man at the table",
-            "man at the table",
             "Men at the table",
             "men at the table"
         )

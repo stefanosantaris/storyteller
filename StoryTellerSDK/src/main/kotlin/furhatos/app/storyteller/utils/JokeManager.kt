@@ -22,8 +22,7 @@ class JokeManager {
     )
 
     private fun getJokeUtterance(joke: Joke): Utterance {
-        println(joke.setup)
-        println(joke.punchline)
+
         return utterance {
             +joke.setup
             +delay(1000)
@@ -38,9 +37,6 @@ class JokeManager {
         }
 
         val nextJoke = getJokeUtterance(jokes[jokeCounter])
-
-        println("In function")
-        println(nextJoke.parts)
 
         jokeCounter++
 
