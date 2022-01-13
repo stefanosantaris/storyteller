@@ -28,6 +28,8 @@ class AskMerchantAboutCult : Intent()
 
 class AskAboutBrother : Intent()
 
+class KillJester : Intent()
+
 // Tavern
 
 class EnterTavern : Intent()
@@ -118,6 +120,7 @@ class TownSquare : EnumEntity(stemming = false, speechRecPhrases = true) {
         )
     }
 }
+
 
 class LeaveToTownSquare(val leave: Leave? = null, val townsquare: TownSquare? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {

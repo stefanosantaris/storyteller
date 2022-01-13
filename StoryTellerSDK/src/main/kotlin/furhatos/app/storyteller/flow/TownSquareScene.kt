@@ -2,6 +2,7 @@ package furhatos.app.storyteller.flow
 
 import furhatos.app.storyteller.nlu.AskAboutBrother
 import furhatos.app.storyteller.nlu.AskMerchantAboutCult
+import furhatos.app.storyteller.nlu.KillJester
 import furhatos.app.storyteller.nlu.LeaveToAlley
 import furhatos.app.storyteller.nlu.ListenToPreacher
 import furhatos.app.storyteller.nlu.PleaseRepeat
@@ -59,7 +60,9 @@ val TownSquareIdle = state(parent = TownSquareOptions) {
             else -> ""
         }.plus("Behind you is the alley where you were before.")
 
+        delay(600)
         furhat.say(optionPresentation)
+        delay(300)
         furhat.ask(getAskForActionPhrase())
     }
 
@@ -72,7 +75,7 @@ val TownSquareArrival = state(parent = TownSquareOptions) {
 
     onEntry {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
 
         furhat.say(dialogStrings["onArrival"]!!)
         furhat.ask(getAskForActionPhrase())
@@ -93,27 +96,37 @@ val TalkingToJester = state(parent = TownSquareOptions) {
     onEntry {
         furhat.say(dialogStrings["jesterOnEntry"]!!)
         changeCharacter(furhat, StoryCharacter.JESTER)
-        random(
-                furhat.ask("An audience! How about a joke or two?"),
-                furhat.ask("Finally some attention! Care for a joke?"),
-                furhat.ask("Here comes my moment! Would you like to hear a joke?")
-        )
+        delay(600)
+
+        furhat.ask("Here comes my moment! Would you like to hear a joke?")
+
     }
 
     onReentry {
         random(
-                furhat.ask("How about a joke or two?"),
-                furhat.ask("Care for a joke?"),
-                furhat.ask("Can I interest you in a joke?")
+                {furhat.ask("How about a joke or two?")},
+                {furhat.ask("Care for a joke?")},
+                {furhat.ask("Can I interest you in a joke?")}
                 )
+    }
+
+    onResponse<KillJester> {
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        delay(600)
+
+        furhat.say("The jester is our friend. He's here to help us.")
+
+        changeCharacter(furhat, StoryCharacter.JESTER)
+        delay(600)
+
+        reentry()
     }
 
     onResponse <PleaseRepeat> {
         furhat.say(dialogStrings["jesterOnEntry"]!!)
         random(
-                furhat.ask("An audience! How about a joke or two?"),
-                furhat.ask("Finally some attention! Care for a joke?"),
-                furhat.ask("Here comes my moment! Can I interest you in a joke?")
+                {furhat.ask("Finally some attention! Care for a joke?")},
+                {furhat.ask("Here comes my moment! Can I interest you in a joke?")}
         )
     }
 
@@ -137,16 +150,19 @@ val TalkingToJester = state(parent = TownSquareOptions) {
                 }
 
             } else {
-                furhat.say("That was my last one!")
+                furhat.say("That was my last one! Fare well!")
                 jokeManager.reset()
                 visited.add(Interactions.JESTER)
+                changeCharacter(furhat, StoryCharacter.NARRATOR)
+                delay(600)
+                furhat.say("You thank the friendly jester for his time and take your leave.")
                 goto(TownSquareIdle)
             }
         } catch (e: NoMoreJokesException) {
             furhat.say("I am afraid that I am all out of jokes!")
             visited.add(Interactions.JESTER)
             changeCharacter(furhat, StoryCharacter.NARRATOR)
-            delay(300)
+            delay(600)
             furhat.say("That will be enough with the jokes for now.")
             goto(TownSquareIdle)
         }
@@ -164,20 +180,21 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
 
     onEntry {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["merchantOnEntry1"]!!)
 
         changeCharacter(furhat, StoryCharacter.MERCHANT)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["merchantOnEntry2"]!!)
 
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["merchantOnEntry3"]!!)
 
         changeCharacter(furhat, StoryCharacter.MERCHANT)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["merchantOnEntry4"]!!)
+        delay(300)
         random(
                 furhat.ask("Would you like to buy something?"),
                 furhat.ask("What will it be then?"),
@@ -195,19 +212,19 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
 
     onResponse <PleaseRepeat> {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["merchantOnEntry1"]!!)
 
         changeCharacter(furhat, StoryCharacter.MERCHANT)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["merchantOnEntry2"]!!)
 
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["merchantOnEntry3"]!!)
 
         changeCharacter(furhat, StoryCharacter.MERCHANT)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["merchantOnEntry4"]!!)
         furhat.ask("Would you like to buy something?")
     }
@@ -220,6 +237,7 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
 
     onResponse<Yes> {
         changeCharacter(furhat, StoryCharacter.MERCHANT)
+        delay(600)
         furhat.say(dialogStrings["buyFromMerchant1"]!!)
 
         changeCharacter(furhat, StoryCharacter.NARRATOR)
@@ -231,14 +249,14 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
     }
 
     onResponse<AskMerchantAboutCult> {
-        furhat.say("Don't ask me anything more! If you really have to know, talk to the" +
+        furhat.say("Don't ask me anything more! If you really have to know, talk to the " +
                 "man preaching over there!")
         furhat.ask("Will you buy something or not?")
     }
 
     onResponse<AskAboutBrother> {
         furhat.say("I cannot tell you more... just let me know if you see him, okay?")
-        furhat.say("Will you buy something or not? I don't have all day.")
+        furhat.ask("Will you buy something or not? I don't have all day.")
     }
 }
 
@@ -246,11 +264,11 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
 
     onEntry {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["preacherOnEntry"]!!)
 
         changeCharacter(furhat, StoryCharacter.PREACHER)
-        delay(300)
+        delay(600)
         furhat.ask("Are you a believer? A child of Galos?")
     }
 
@@ -260,62 +278,65 @@ val ListeningToPreacher = state(parent = TownSquareOptions) {
 
     onResponse <PleaseRepeat> {
         changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
+        delay(600)
         furhat.say(dialogStrings["preacherOnEntry"]!!)
 
         changeCharacter(furhat, StoryCharacter.PREACHER)
-        delay(300)
+        delay(600)
         furhat.ask("Are you a believer? A child of Galos?")
     }
 
     onResponse<Yes> {
         changeCharacter(furhat, StoryCharacter.PREACHER)
-        delay(300)
+        delay(600)
         furhat.say("I knew it! I could see it in your eyes!")
+        goto(ReceivingPassword)
 
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
-        furhat.say(dialogStrings["receivePassword1"]!!)
-
-        changeCharacter(furhat, StoryCharacter.PREACHER)
-        delay(300)
-        furhat.say(PollyVoice.Justin().whisper(dialogStrings["receivePassword2"]!!))
-
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
-        furhat.say("A bit shook from the interaction, you leave the preacher and his surrounding crowd. " +
-                "You remember seeing the tattooed man disappearing into the tavern he spoke about. Maybe you " +
-                "need to make your way back there in order to find out more.")
-
-        visited.add(Interactions.PREACHER)
-        goto(TownSquareIdle)
     }
 
     onResponse<No> {
-        furhat.say("It matters not. In time you will inevitably reckon the greatness of our lord.")
-
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
-        furhat.say(dialogStrings["receivePassword1"]!!)
-
         changeCharacter(furhat, StoryCharacter.PREACHER)
-        delay(300)
-        furhat.say(PollyVoice.Justin().whisper(dialogStrings["receivePassword2"]!!))
+        delay(600)
+        furhat.say("It matters not. In time you will inevitably reckon the greatness of our lord.")
+        goto(ReceivingPassword)
 
-        changeCharacter(furhat, StoryCharacter.NARRATOR)
-        delay(300)
-        furhat.say("A bit shook from the interaction, you leave the preacher and his surrounding crowd. " +
-                "You remember seeing the tattooed man disappearing into the tavern he spoke about. Maybe you " +
-                "need to make your way back there in order to find out more.")
-
-        visited.add(Interactions.PREACHER)
-        goto(TownSquareIdle)
     }
 
     onResponse<RequestGodExplanation> {
         changeCharacter(furhat, StoryCharacter.PREACHER)
         furhat.say(dialogStrings["godExplanation"]!!)
+        delay(500)
         furhat.ask("I ask you again, are you a follower?")
+    }
+}
+
+val ReceivingPassword = state(parent = TownSquareOptions) {
+    onEntry {
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        delay(600)
+        furhat.say(dialogStrings["receivePassword1"]!!)
+
+        changeCharacter(furhat, StoryCharacter.PREACHER)
+        delay(600)
+        furhat.say(PollyVoice.Justin().whisper(dialogStrings["receivePassword2"]!!))
+        delay(200)
+        furhat.say(PollyVoice.Justin().whisper(
+                "Dawn ${furhat.voice.pause("300ms")} " +
+                        "is ${furhat.voice.pause("300ms")} " +
+                        "breaking ${furhat.voice.pause("300ms")}"
+        )
+        )
+        delay(300)
+        furhat.say(PollyVoice.Justin().whisper(dialogStrings["receivePassword3"]!!))
+
+        changeCharacter(furhat, StoryCharacter.NARRATOR)
+        delay(600)
+        furhat.say("A bit shook from the interaction, you leave the preacher and his surrounding crowd. " +
+                "You remember seeing the tattooed man disappearing into the tavern he spoke about. Maybe you " +
+                "need to make your way back there in order to find out more.")
+
+        visited.add(Interactions.PREACHER)
+        goto(TownSquareIdle)
     }
 }
 
@@ -338,14 +359,14 @@ private val dialogStrings = mapOf(
         "receivePassword1" to
                 "He moves closer to you and whispers in your ear, too quietly for anyone else to hear.",
         "receivePassword2" to
-                "There is a gathering tonight. Go to the Hidden Goat Tavern and tell the man behind the bar the following: " +
-                "\"Dawn is breaking\". There you will find out more.",
+                "There is a gathering tonight. Go to the Hidden Goat Tavern and tell the man behind the bar the following: ",
+        "receivePassword3" to "There you will find out more.",
         "merchantOnEntry1" to
-                "You approach the merchant stand and find that a young woman is standing there selling meat and cheese. She looks at " +
+                "You approach the merchant stand and find a young woman there selling meat and cheese. She looks at " +
                 "you with despair in her eyes.",
         "merchantOnEntry2" to
                 "You haven't seen my brother, have you? He has been gone for several days " +
-                "and I am beginning to worry... I wish he never would have gotten involved with those damn cultists!",
+                "and I am beginning to worry... I wish he never would have gotten involved with those damned cultists!",
         "merchantOnEntry3" to
                 "She suddenly looks startled, as if she had just caught herself saying something forbidden.",
         "merchantOnEntry4" to

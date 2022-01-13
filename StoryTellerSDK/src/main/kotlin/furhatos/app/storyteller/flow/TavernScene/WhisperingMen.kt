@@ -27,6 +27,8 @@ val IntroWhisperingMen: State = state(Interaction) {
             furhat.say(utterance {
                 +"While you approach the two people sitting in their booth, they immediately stop talking and look suspiciously at you."
                 +delay(100)
+                +"You wonder if they might have seen the strange man entering. Perhaps they even know something about the rumors of a cult."
+                +delay(100)
                 +"Once you have arrived at their table, one of the men says:"
             })
         } else {
@@ -52,8 +54,9 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
             furhat.say(utterance {
                 +"What do you want?"
                 +blocking {
-                    furhat.gesture(Gestures.ExpressDisgust, async = false)
+                    furhat.gesture(Gestures.ExpressDisgust, async = true)
                 }
+                +delay(300)
             })
             furhat.ask("Can't you see that we are talking?")
         } else {
@@ -114,6 +117,17 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
                 + blocking {furhat.gesture(Gestures.BrowFrown, async = false)}
                 + "What are you doing sniffing around in our favorite tavern? You better leave."})}
         )
+
+        changeCharacter(furhat,StoryCharacter.NARRATOR)
+        delay(600)
+        random (
+            furhat.say("Maybe some gold would change their disposition towards you."),
+            furhat.say("Perhaps some gold would make them a bit friendlier.")
+        )
+
+        changeCharacter(furhat,StoryCharacter.WHISPERING_MAN)
+        delay(600)
+
     }
 
     onResponse<FollowMan> {
@@ -131,6 +145,17 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
                 + blocking { furhat.gesture(Gestures.BrowFrown, async = false) }
                 + "But what do you care?" }) }
         )
+
+        changeCharacter(furhat,StoryCharacter.NARRATOR)
+        delay(600)
+        random (
+            furhat.say("Maybe some gold would refresh their memories."),
+            furhat.say("Perhaps some gold could help them remember something.")
+        )
+
+        changeCharacter(furhat,StoryCharacter.WHISPERING_MAN)
+        delay(600)
+
     }
 
     onResponse<AskForCult> {
@@ -148,6 +173,16 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
                 + blocking { furhat.gesture(Gestures.Shake, async = false) }
                 + "A cult? That is insane. What do you want?" }) }
         )
+
+        changeCharacter(furhat,StoryCharacter.NARRATOR)
+        delay(600)
+        random (
+            furhat.say("Maybe some gold would refresh their memories."),
+            furhat.say("Perhaps some gold could help them remember something.")
+        )
+
+        changeCharacter(furhat,StoryCharacter.WHISPERING_MAN)
+        delay(600)
     }
 
     onResponse<HintAtPassword> {
@@ -184,7 +219,7 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
     onNoResponse {
         random(
             { furhat.ask("Why don't you say anything? Are you too afraid to speak?") },
-            { furhat.ask("Answer us!") },
+            { furhat.ask("Are you just gonna stand there?") },
             { furhat.ask("Are you afraid or why don't you speak with us?") })
     }
 
@@ -309,7 +344,7 @@ val DialogWhisperingMen_Bribing: State = state(parent = TavernOptions) {
 private var responseCounter = 0
 
 private fun timeToLeave(furhat: Furhat): Boolean {
-    return if (responseCounter == 3) {
+    return if (responseCounter == 2) {
         responseCounter = 0
         changeCharacter(furhat, StoryCharacter.NARRATOR)
         furhat.say(

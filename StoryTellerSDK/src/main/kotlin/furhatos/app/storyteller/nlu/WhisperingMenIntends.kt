@@ -31,7 +31,8 @@ class Good : EnumEntity(stemming = false, speechRecPhrases = true) {
             "Vension",
             "vension",
             "Vision",
-            "vision"
+            "vision",
+            "pay"
         )
     }
 }

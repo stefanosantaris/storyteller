@@ -9,8 +9,8 @@ fun changeCharacter(furhat: Furhat, characterEnum: StoryCharacter) {
     val character = characterTraits[characterEnum]
     character?.let {
         furhat.voice = it.voice
-        furhat.character = it.name
-        furhat.mask = it.mask
+        furhat.setTexture(it.name)
+        furhat.setModel(it.mask)
     }
 }
 
@@ -25,13 +25,13 @@ enum class StoryCharacter {
 }
 
 private val characterTraits = mapOf(
-    StoryCharacter.NARRATOR to Character("Jamie", PollyNeuralVoice.Joey(), "adult"),
-    StoryCharacter.ALLEY_WOMAN to Character("Isabel", PollyNeuralVoice.Kimberly(), "adult"),
-    StoryCharacter.WHISPERING_MAN to Character("Fedora", PollyNeuralVoice.Brian(), null),
-    StoryCharacter.BARTENDER to Character("Brooklyn", PollyVoice.Russell(), null),
-    StoryCharacter.JESTER to Character("Hans", PollyVoice.Hans(), null),
-    StoryCharacter.MERCHANT to Character("Astrid", PollyVoice.Astrid(), null),
-    StoryCharacter.PREACHER to Character("Justin", PollyVoice.Justin(), null)
+    StoryCharacter.NARRATOR to Character("Marty", PollyNeuralVoice.Brian(), "adult"),
+    StoryCharacter.ALLEY_WOMAN to Character("Arianna", PollyNeuralVoice.Kimberly(), "adult"),
+    StoryCharacter.WHISPERING_MAN to Character("Geremy", PollyVoice.Matthew(), null),
+    StoryCharacter.BARTENDER to Character("Jack", PollyVoice.Russell(), null),
+    StoryCharacter.JESTER to Character("Fred", PollyVoice.Joey(), null),
+    StoryCharacter.MERCHANT to Character("Ursula", PollyVoice.Amy(), null),
+    StoryCharacter.PREACHER to Character("Barack", PollyVoice.Matthew(), null)
 )
 
 private data class Character(val name: String, val voice: Voice, val mask: String?)
