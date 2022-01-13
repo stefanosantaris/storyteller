@@ -13,6 +13,7 @@ import furhatos.app.storyteller.utils.JokeManager
 import furhatos.app.storyteller.utils.NoMoreJokesException
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.app.storyteller.utils.emotion.EmotionStorage
 import furhatos.app.storyteller.utils.getAskForActionPhrase
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
@@ -134,12 +135,20 @@ val TalkingToJester = state(parent = TownSquareOptions) {
         try {
             val joke = jokeManager.getNextJoke()
             furhat.say(joke)
+
             if (jokeManager.hasMoreJokes()) {
-                random(
+                val emotion = EmotionStorage.getDominantEmotion(1)
+                if (emotion == "Happy") {
+                    furhat.say("I see that you enjoyed it.")
+                    random(
                         furhat.ask("How about another one?"),
                         furhat.ask("Care to hear one more?"),
                         furhat.ask("I have more of those in store, want to hear one?")
-                        )
+                    )
+                } else {
+                    furhat.ask("Didn't like this one? How about another one?")
+                }
+
             } else {
                 furhat.say("That was my last one! Fare well!")
                 jokeManager.reset()
@@ -375,5 +384,11 @@ private enum class Interactions {
     MERCHANT,
     PREACHER
 }
+
+private val interactionStrings = mapOf(
+        Interactions.JESTER to "jester",
+        Interactions.MERCHANT to "merchant",
+        Interactions.PREACHER to "preacher"
+)
 
 private val visited = mutableSetOf<Interactions>()
