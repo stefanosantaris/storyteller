@@ -55,7 +55,10 @@ class Bartender : EnumEntity(stemming = false, speechRecPhrases = true) {
             "Dangerous man",
             "dangerous man",
             "Dangerous men",
-            "dangerous men"
+            "dangerous men",
+            "big man",
+            "counter",
+            "man behind counter"
         )
     }
 }
@@ -72,8 +75,6 @@ Express that you want to talk to the two men
 class TalkingMen : EnumEntity(stemming = false, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         return listOf(
-            "Man",
-            "man",
             "Men",
             "men",
             "Talking man",

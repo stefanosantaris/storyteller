@@ -2,6 +2,7 @@ package furhatos.app.storyteller.flow
 
 import furhatos.app.storyteller.nlu.AskAboutBrother
 import furhatos.app.storyteller.nlu.AskMerchantAboutCult
+import furhatos.app.storyteller.nlu.GoToAlley
 import furhatos.app.storyteller.nlu.KillJester
 import furhatos.app.storyteller.nlu.LeaveToAlley
 import furhatos.app.storyteller.nlu.ListenToPreacher
@@ -37,7 +38,7 @@ val TownSquareOptions: State = state(Interaction) {
         goto(ListeningToPreacher)
     }
 
-    onResponse<LeaveToAlley> {
+    onResponse<GoToAlley> {
         goto(alleyArrival(EnteredAlleyFrom.TOWN_SQUARE))
     }
 }
@@ -135,7 +136,7 @@ val TalkingToJester = state(parent = TownSquareOptions) {
         try {
             val joke = jokeManager.getNextJoke()
             furhat.say(joke)
-
+            delay(500)
             if (jokeManager.hasMoreJokes()) {
                 val emotion = EmotionStorage.getDominantEmotion(1)
                 if (emotion == "Happy") {
@@ -187,6 +188,18 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
         delay(600)
         furhat.say(dialogStrings["merchantOnEntry2"]!!)
 
+        val emotion = EmotionStorage.getDominantEmotion(1)
+        if (emotion in listOf("Sad","Happy","Neutral")) {
+            delay(600)
+            if (emotion == "Sad") {
+                furhat.say("Lose the gloom, I don't need your pity")
+            } else if (emotion == "Happy") {
+                furhat.say("You think this is funny? Either stop smiling or get out.")
+            } else if (emotion == "Neutral") {
+                furhat.say("Not that you seem to care anyway...")
+            }
+        }
+
         changeCharacter(furhat, StoryCharacter.NARRATOR)
         delay(600)
         furhat.say(dialogStrings["merchantOnEntry3"]!!)
@@ -222,7 +235,7 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
         if (emotion == "Sad") {
             furhat.say("Lose the gloom, I don't need your pity")
         } else if (emotion == "Happy") {
-            furhat.say("You think this is funny? Either stop smiling or get out.")
+            furhat.say("You think this is funny? Stop smiling.")
         } else if (emotion == "Neutral") {
             furhat.say("Not that you seem to care anyway...")
         }
@@ -338,12 +351,21 @@ val ReceivingPassword = state(parent = TownSquareOptions) {
         furhat.say(PollyVoice.Justin().whisper(dialogStrings["receivePassword3"]!!))
 
         val emotion = EmotionStorage.getDominantEmotion(1)
-        if (emotion == "Happy") {
-            furhat.say("The prospect seems to light a spark in you. That is good")
-        } else if (emotion == "Neutral") {
-            furhat.say("You may not seem excited now, but trust me. You will not be disappointed.")
-        } else if (emotion == "Fearful") {
-            furhat.say("You have nothing to fear. Just do as I told you.")
+        if (emotion in listOf("Happy", "Neutral", "Fearful")) {
+            changeCharacter(furhat, StoryCharacter.NARRATOR)
+            delay(600)
+            furhat.say("He takes a step back and looks you in the eyes.")
+
+            changeCharacter(furhat, StoryCharacter.PREACHER)
+            delay(600)
+
+            if (emotion == "Happy") {
+                furhat.say("The prospect seems to light a spark in you. That is good")
+            } else if (emotion == "Neutral") {
+                furhat.say("You may not seem excited now, but trust me. You will not be disappointed.")
+            } else if (emotion == "Fearful") {
+                furhat.say("You have nothing to fear. Just do as I told you.")
+            }
         }
 
         changeCharacter(furhat, StoryCharacter.NARRATOR)

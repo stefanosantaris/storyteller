@@ -111,7 +111,8 @@ class Left : EnumEntity(stemming = false, speechRecPhrases = true) {
             "To the one on the left",
             "to the one on the left",
             "The left one",
-            "the left one"
+            "the left one",
+            "western"
         )
     }
 }
@@ -130,7 +131,8 @@ class Straight : EnumEntity(stemming = false, speechRecPhrases = true) {
             "In front of me",
             "in front of me",
             "Straight",
-            "straight"
+            "straight",
+            "northern"
         )
     }
 }
@@ -151,7 +153,10 @@ class Right : EnumEntity(stemming = false, speechRecPhrases = true) {
             "The right one",
             "the right one",
             "Beast",
-            "beast"
+            "beast",
+            "eastern",
+            "eastern",
+            "the eastern corridor"
         )
     }
 }

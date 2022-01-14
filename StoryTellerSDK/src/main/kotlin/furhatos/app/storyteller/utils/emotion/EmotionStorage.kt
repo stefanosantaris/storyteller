@@ -10,14 +10,13 @@ object EmotionStorage{
         return emotions.take(numEmotions)
     }
 
-    fun getDominantEmotion(numEmotions:Int = 1): String {
+    fun getDominantEmotion(numEmotions:Int = 1): String? {
         val allEmotions = getLatestEmotions(numEmotions) as List<EmotionRecord>
 
         val numbersByElement = allEmotions.groupingBy { it.emotion }.eachCount()
         println(numbersByElement)
-        val dominantEmotion = numbersByElement.maxBy { it.value }?.key as String
 
-        return dominantEmotion
+        return if (numbersByElement.isNotEmpty()) numbersByElement.maxBy { it.value }?.key as String else null
     }
 
 

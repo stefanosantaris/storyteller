@@ -50,7 +50,7 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
         val emotion = EmotionStorage.getDominantEmotion(1)
         var emotionText = ""
         if (emotion == "Happy") {
-            emotionText = "Now quit smirking about."
+            emotionText = "Quit smirking about."
         } else if (emotion == "Angry") {
             emotionText = "Something wrong? Better be careful, we are two against one."
         }

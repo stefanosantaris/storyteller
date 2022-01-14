@@ -1,4 +1,6 @@
 package furhatos.app.storyteller.flow
+import furhatos.app.storyteller.flow.TavernScene.IntroBartender
+import furhatos.app.storyteller.flow.TavernScene.IntroWhisperingMen
 import furhatos.app.storyteller.nlu.TellNameBriefly
 import furhatos.app.storyteller.robotName
 import furhatos.app.storyteller.utils.StoryCharacter
