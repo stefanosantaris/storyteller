@@ -5,6 +5,7 @@ import furhatos.app.storyteller.flow.BasementScene.BasementIntro
 import furhatos.app.storyteller.nlu.*
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.app.storyteller.utils.emotion.EmotionStorage
 import furhatos.flow.kotlin.Furhat
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
@@ -60,12 +61,24 @@ val DialogBartender_1 = state(parent = TavernOptions) {
                 + blocking { furhat.gesture(Gestures.ExpressDisgust, async = true) }
                 + "What do you want little rascal?"
             })
+            val emotion = EmotionStorage.getDominantEmotion(1)
+            if (emotion == "Happy") {
+                furhat.say("And wipe that stupid smirk of your face, will you.")
+            } else if (emotion == "Angry") {
+                furhat.say("Don't look at me that way. I am not afraid to fight you.")
+            }
             furhat.ask("You don’t look like you should be in a bar like this. Why are you here?")
         } else {
             furhat.say(utterance {
                 + blocking { furhat.gesture(Gestures.Shake, async = false) }
                 + "You again?"
             })
+            val emotion = EmotionStorage.getDominantEmotion(1)
+            if (emotion == "Happy") {
+                furhat.say("And wipe that stupid smirk of your face, will you.")
+            } else if (emotion == "Angry") {
+                furhat.say("Don't look at me that way. I am not afraid to fight you.")
+            }
             furhat.ask("Didn't I tell you to leave, little rascal? What do you want?")
         }
     }
@@ -191,19 +204,26 @@ val DialogBartender_1 = state(parent = TavernOptions) {
 
 val DialogBartender_FightScene: State = state(parent = TavernOptions) {
     onEntry {
+        val emotion = EmotionStorage.getDominantEmotion(1)
+        var response = "I would be more scared if I were you."
+        if (emotion == "Angry") {
+           response = "Quit the staring! Want a fight or what?"
+        } else if ( emotion == "Fearful") {
+            response = "Not looking so tough now, are you?"
+        }
         random(
             { furhat.ask(utterance {
                 + "You dare to insult me?"
                 + blocking { furhat.gesture(Gestures.ExpressAnger, async = false) }
-                + "Do you want a fight?" }) },
+                + "Do you want a fight? ${response}"}) },
             { furhat.ask(utterance {
                 + "Are you seriously insulting me?"
                 + blocking { furhat.gesture(Gestures.BrowFrown, async = false) }
-                + "We can go out fighting if you want." }) },
+                + "We can go out fighting if you want. ${response}" }) },
             { furhat.ask(utterance {
                 + "You dare insult me?"
                 + blocking { furhat.gesture(Gestures.ExpressAnger, async = false) }
-                + "If you want, we can go outside and fight this out." }) }
+                + "If you want, we can go outside and fight this out. ${response}" }) }
         )
     }
     onNoResponse {

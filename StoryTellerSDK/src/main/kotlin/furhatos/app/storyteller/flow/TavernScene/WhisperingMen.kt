@@ -8,6 +8,7 @@ import furhatos.app.storyteller.flow.talkedToWhisperingMen
 import furhatos.app.storyteller.nlu.*
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.app.storyteller.utils.emotion.EmotionStorage
 import furhatos.flow.kotlin.Furhat
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
@@ -45,6 +46,14 @@ val IntroWhisperingMen: State = state(Interaction) {
 
 val DialogWhisperingMen_1 = state(parent = TavernOptions) {
     onEntry {
+
+        val emotion = EmotionStorage.getDominantEmotion(1)
+        var emotionText = ""
+        if (emotion == "Happy") {
+            emotionText = "Now quit smirking about."
+        } else if (emotion == "Angry") {
+            emotionText = "Something wrong? Better be careful, we are two against one."
+        }
         // change voice and mask
         changeCharacter(furhat, StoryCharacter.WHISPERING_MAN)
         delay(600)
@@ -58,7 +67,7 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
                 }
                 +delay(300)
             })
-            furhat.ask("Can't you see that we are talking?")
+            furhat.ask( " ${emotionText} Can't you see that we are talking?")
         } else {
             furhat.say(utterance {
                 +"You again?"
@@ -66,7 +75,7 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
                     furhat.gesture(Gestures.Shake, async = false)
                 }
             })
-            furhat.ask("Can't you mind your own business? What do you want?")
+            furhat.ask("${emotionText} Can't you mind your own business? What do you want?")
         }
     }
 

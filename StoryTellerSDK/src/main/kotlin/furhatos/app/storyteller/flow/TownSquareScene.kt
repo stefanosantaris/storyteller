@@ -218,6 +218,14 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
         changeCharacter(furhat, StoryCharacter.MERCHANT)
         delay(600)
         furhat.say(dialogStrings["merchantOnEntry2"]!!)
+        val emotion = EmotionStorage.getDominantEmotion(1)
+        if (emotion == "Sad") {
+            furhat.say("Lose the gloom, I don't need your pity")
+        } else if (emotion == "Happy") {
+            furhat.say("You think this is funny? Either stop smiling or get out.")
+        } else if (emotion == "Neutral") {
+            furhat.say("Not that you seem to care anyway...")
+        }
 
         changeCharacter(furhat, StoryCharacter.NARRATOR)
         delay(600)
@@ -328,6 +336,15 @@ val ReceivingPassword = state(parent = TownSquareOptions) {
         )
         delay(300)
         furhat.say(PollyVoice.Justin().whisper(dialogStrings["receivePassword3"]!!))
+
+        val emotion = EmotionStorage.getDominantEmotion(1)
+        if (emotion == "Happy") {
+            furhat.say("The prospect seems to light a spark in you. That is good")
+        } else if (emotion == "Neutral") {
+            furhat.say("You may not seem excited now, but trust me. You will not be disappointed.")
+        } else if (emotion == "Fearful") {
+            furhat.say("You have nothing to fear. Just do as I told you.")
+        }
 
         changeCharacter(furhat, StoryCharacter.NARRATOR)
         delay(600)

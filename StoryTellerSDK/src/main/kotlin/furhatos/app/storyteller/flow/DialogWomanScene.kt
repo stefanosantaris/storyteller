@@ -6,6 +6,7 @@ import furhatos.app.storyteller.nlu.LeaveToTownSquare
 import furhatos.app.storyteller.nlu.IamCop
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.app.storyteller.utils.emotion.EmotionStorage
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
 import furhatos.flow.kotlin.onResponse
@@ -119,13 +120,19 @@ val DialogWoman_1: State = state(parent = WomanOptions) {
 
 val DialogWomanAnswer_1_a: State = state(WomanOptions) {
     onEntry {
+        val emotion = EmotionStorage.getDominantEmotion(1)
+        var emotionText = ""
+        if (emotion == "Happy") {
+            emotionText="This is not a laughing matter."
+        }
         furhat.ask(utterance {
             +"I cannot talk to you!"
             +blocking {
                 furhat.gesture(Gestures.Shake, async = false)
             }
-            +"You need to leave now! If they see me with you, we will both be in trouble!"
+            +"You need to leave now! If they see me with you, we will both be in trouble! ${emotionText}"
         })
+
     }
 
     onReentry {

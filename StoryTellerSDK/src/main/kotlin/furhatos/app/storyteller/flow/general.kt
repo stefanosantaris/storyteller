@@ -3,6 +3,7 @@ import furhatos.app.storyteller.nlu.TellNameBriefly
 import furhatos.app.storyteller.robotName
 import furhatos.app.storyteller.utils.StoryCharacter
 import furhatos.app.storyteller.utils.changeCharacter
+import furhatos.app.storyteller.utils.emotion.EmotionStorage
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
 import furhatos.flow.kotlin.onResponse
@@ -14,6 +15,7 @@ import furhatos.flow.kotlin.utterance
 import furhatos.gestures.Gestures
 import furhatos.nlu.common.TellName
 import furhatos.records.User
+import org.junit.Test
 
 val Idle: State = state {
 
@@ -254,6 +256,19 @@ fun process_name(userName: String): State = state {
                     })
                 }
             )
+        }
+        val emotion = EmotionStorage.getDominantEmotion(1)
+        if (emotion != "Neutral") {
+            var gesture = Gestures.BigSmile
+            if ((emotion == "Sad") || (emotion == "Fearful")) {
+                gesture = Gestures.ExpressSad
+            }
+            furhat.say(utterance {
+                +"You look rather ${emotion} today.}"
+                +blocking {
+                    furhat.gesture(gesture, async = false)
+                }
+            })
         }
         goto(PresentGame)
     }
