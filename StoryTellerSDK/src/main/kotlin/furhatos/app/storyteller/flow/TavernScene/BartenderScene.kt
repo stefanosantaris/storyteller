@@ -66,6 +66,10 @@ val DialogBartender_1 = state(parent = TavernOptions) {
                 furhat.say("And wipe that stupid smirk of your face, will you.")
             } else if (emotion == "Angry") {
                 furhat.say("Don't look at me that way. I am not afraid to fight you.")
+            } else if (emotion == "Surprised") {
+                furhat.say("Why do you seem so surprised? Never seen a man that muscular before?")
+            } else if (emotion == "Fearful") {
+                furhat.say("I can see a shit ton of fear in your eyes.")
             }
             furhat.ask("Why are you here?")
         } else {
@@ -79,6 +83,10 @@ val DialogBartender_1 = state(parent = TavernOptions) {
                 furhat.say("And wipe that stupid smirk of your face, will you.")
             } else if (emotion == "Angry") {
                 furhat.say("Don't look at me that way. I am not afraid to fight you.")
+            } else if (emotion == "Surprised") {
+                furhat.say("Why do you seem so surprised? Never seen a man that muscular before?")
+            } else if (emotion == "Fearful") {
+                furhat.say("I can see a shit ton of fear in your eyes.")
             }
             furhat.ask("What do you want?")
         }

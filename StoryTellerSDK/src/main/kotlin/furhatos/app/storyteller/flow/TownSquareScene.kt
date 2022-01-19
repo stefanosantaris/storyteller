@@ -139,15 +139,27 @@ val TalkingToJester = state(parent = TownSquareOptions) {
             delay(500)
             if (jokeManager.hasMoreJokes()) {
                 val emotion = EmotionStorage.getDominantEmotion(1)
+                var emotionText = ""
                 if (emotion == "Happy") {
-                    furhat.say("I see that you enjoyed it.")
+                    emotionText="I see that you enjoyed it."
+                } else if (emotion == "Angry") {
+                    emotionText = "Didn't like this one? Okay, but no reason to show me such an angry face!"
+                } else if (emotion == "Fearful") {
+                    emotionText = "Didn't like this one? Okay, but no reason to be fearful!"
+                } else if (emotion == "Surprised") {
+                    emotionText = "You seem surprised! Never heard such a good joke before?"
+                }
+
+                if (emotion == "Happy" || emotion == "Surprised") {
+                    furhat.say(emotionText)
                     random(
                         furhat.ask("How about another one?"),
                         furhat.ask("Care to hear one more?"),
                         furhat.ask("I have more of those in store, want to hear one?")
                     )
                 } else {
-                    furhat.ask("Didn't like this one? How about another one?")
+                    furhat.say(emotionText)
+                    furhat.ask("How about another one?")
                 }
 
             } else {
@@ -192,11 +204,11 @@ val TalkingToMerchant = state(parent = TownSquareOptions) {
         if (emotion in listOf("Sad","Happy","Neutral")) {
             delay(600)
             if (emotion == "Sad") {
-                furhat.say("Lose the gloom, I don't need your pity")
+                furhat.say("Lose the gloom, I don't need your pity! Do not pretend to care with your sad face!")
             } else if (emotion == "Happy") {
                 furhat.say("You think this is funny? Either stop smiling or get out.")
             } else if (emotion == "Neutral") {
-                furhat.say("Not that you seem to care anyway...")
+                furhat.say("From your face I can tell that you seem not to care anyway...")
             }
         }
 
@@ -360,11 +372,11 @@ val ReceivingPassword = state(parent = TownSquareOptions) {
             delay(600)
 
             if (emotion == "Happy") {
-                furhat.say("The prospect seems to light a spark in you. That is good")
+                furhat.say("The prospect seems to light a spark in you. I see you smile. That is good!")
             } else if (emotion == "Neutral") {
-                furhat.say("You may not seem excited now, but trust me. You will not be disappointed.")
+                furhat.say("Your face tells me that you are not excited yet, but trust me. You will not be disappointed.")
             } else if (emotion == "Fearful") {
-                furhat.say("You have nothing to fear. Just do as I told you.")
+                furhat.say("You have nothing to fear. No reason for such a troubled expression on your face. Just do as I told you.")
             }
         }
 

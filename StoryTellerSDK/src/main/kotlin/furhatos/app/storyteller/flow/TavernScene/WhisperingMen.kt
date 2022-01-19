@@ -50,9 +50,13 @@ val DialogWhisperingMen_1 = state(parent = TavernOptions) {
         val emotion = EmotionStorage.getDominantEmotion(1)
         var emotionText = ""
         if (emotion == "Happy") {
-            emotionText = "Quit smirking about."
+            emotionText = "Quit smirking about. There is no reason to smile!"
         } else if (emotion == "Angry") {
-            emotionText = "Something wrong? Better be careful, we are two against one."
+            emotionText = "Something wrong? What about that angry face of yours? Better be careful, we are two against one."
+        } else if (emotion == "Surprised") {
+            furhat.say("Why so surprised?")
+        } else if (emotion == "Fearful") {
+            furhat.say("You seem scared like a fraidy-cat. Move away!")
         }
         // change voice and mask
         changeCharacter(furhat, StoryCharacter.WHISPERING_MAN)

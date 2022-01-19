@@ -124,6 +124,12 @@ val DialogWomanAnswer_1_a: State = state(WomanOptions) {
         var emotionText = ""
         if (emotion == "Happy") {
             emotionText="This is not a laughing matter."
+        } else if (emotion == "Angry") {
+            emotionText = "And don't show me such an angry face!"
+        } else if (emotion == "Fearful") {
+            emotionText = "I can see that you are fearful as well, so take my advice and leave!"
+        } else if (emotion == "Surprised") {
+            emotionText = "And don't pretend to be so surprised!"
         }
         furhat.ask(utterance {
             +"I cannot talk to you!"
